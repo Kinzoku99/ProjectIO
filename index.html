@@ -12,6 +12,8 @@
 
 		<script src="bootstrap/js/bootstrap.js"></script>
 		<script src="bootstrap/js/bootstrap.esm.js"></script>
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 		<!--<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>-->
 		<!--<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>-->
 	</head>
@@ -122,6 +124,102 @@
 							Ta strona powstała dla osób zainteresowanych całkowaniem.
 							Można tu znaleźć kalkulatory całek oznaczonych,
 							aproksymacje funkcji pierwotnych, i galerię ciekawych całek.
+							Poniżej znajduje się teoria dotycząca całek.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<!-- To jest jakieś wprowadzenie do całki Riemanna -->
+			<section class="container pb-3">
+				<div class="row">
+					<div class="col-lg-8 mx-auto">
+						<h2 class="fw-light">Całka Riemanna</h1>
+						
+						<p>
+							<h3 class = "h5 fw-light">Podział odcinka</h3>
+							Podziałem \(P\) przedziału \([a,b]\) nazywa się każdy ściśle
+							rosnący ciąg skończony \(p_1,\ldots,p_n\) elementów nazywanych
+							<italics>punktami podziału</italics> tego przedziału, gdzie
+							$$a = p_0 < p_1 < \ldots < p_{n-1} < p_n = b$$
+						</p>
+
+						<p>
+							<h3 class = "h5 fw-light">Całka dolna i górna</h3>
+							Niech dana będzie funkcja ograniczona \(f \colon [a,b] \to \mathbb{R}\).
+							Niech \(\mathcal{P}\) oznacza zbiór podziałów odcinka \([a,b]\). Wówczas
+							całkę dolną i całkę górną Riemanna \(L_f\) i \(U_f\) definiują wzory
+							$$L_f = \sup_{P \in \mathcal{P}}\left\{\sum_{i=1}^n \inf_{x\in [p_{i-1},p_i]} f(x) \cdot (p_i-p_{i-1})\right\}$$
+							$$U_f = \inf_{P \in \mathcal{P}}\left\{\sum_{i=1}^n \sup_{x\in [p_{i-1},p_i]} f(x) \cdot (p_i-p_{i-1})\right\}$$
+						</p>
+						
+						<p>
+							<h3 class = "h5 fw-light">Funkcja całkowalna</h3>
+							Funkcja ograniczona \(f \colon [a,b] \to \mathbb{R}\) jest całkowalna
+							w sensie Riemanna jeśli \(L_f = U_f\) i wówczas
+							\(\int_a^b f(x) dx = L_f = U_f\).<br>
+							<small>
+								Powyższa definicja bywa nazywana całką Darboux,
+								istnieje inna definicja całki Riemanna, 
+								ale obie definicje są równoważne.
+							</small>
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<!-- To jest jakieś wprowadzenie do całki Lebesgue'a -->
+			<section class="container pb-3">
+				<div class="row">
+					<div class="col-lg-8 mx-auto">
+						<h2 class="fw-light">Całka Lebesgue'a</h1>
+						
+						<p>
+							<h3 class = "h5 fw-light">Funkcja prosta</h3>
+							Niech \(\mathcal{F}\) będzie \(\sigma\)-ciałem podzbiorów
+							pewnego zbioru \(X\) oraz \(A \subseteq X\). Wówczas jeśli dla
+							\(f \colon A \to [0,\infty)\) istnieją liczby nieujemne \(a_1,\ldots,a_n\)
+							i zbiory \(A_1,\ldots,A_n \subseteq A\), że
+							$$f = \sum_{i=1}^n a_i \chi(A_i)$$
+							to \(f\) nazywamy funkcją prostą.
+						</p>
+
+						<p>
+							<h3 class = "h5 fw-light">Funkcja mierzalna</h3>
+							W przestrzeni z miarą \((X,\mathcal{F},\mu)\) elementy 
+							\(\sigma\)-ciała \(\mathcal{F}\) określonego na przestrzeni \(X\) nazywa się
+							zbiorami \(\mu\)-mierzalnymi względem \(\mathcal{F}\).
+							Funkcja \(f\colon X \to \mathbb{R}\) jest \(\mu\)-mierzalna 
+							jeśli \(f^{-1}(U) \in \mathcal{F}\) dla dowolnych otwartych \(U \subseteq \mathbb{R}\).
+						</p>
+
+						<p>
+							<h3 class = "h5 fw-light">Rozbicie zbioru mierzalnego</h3>
+							Przeliczalna suma zbiorów \(E_1,\ldots\) jest rozbiciem zbioru mierzalnego \(E\)
+							wtedy i tylko wtedy gdy \(E_i\) są mierzalne, parami rozłączne i \(\bigcup E_i = E\).
+						</p>
+
+						<p>
+							<h3 class = "h5 fw-light">Całka z funkcji mierzalnej</h3>
+							Niech \(\mathcal{S}\) będzie zbiorem funkcji prostych.
+							Niech \(f\) będzie funkcją mierzalną. Niech \(\mathcal{R}(E)\) będzie
+							rodziną rozbić zbioru \(E\). Całkę Lebesgue'a funkcji \(f\) na \(E\) definiuje się jako.
+							$$\int_{E} f d\mu = \sup_{(E_1,\ldots) \in \mathcal{R}(E)}\left(\sum_{i=1}^{\infty} \inf_{x \in E_i} \max(f(x),0) \mu(E_i)\right)$$ 
+							$$- \sup_{(E_1,\ldots) \in \mathcal{R}(E)}\left(\sum_{i=1}^{\infty} \inf_{x \in E_i} -\min(f(x),0) \mu(E_i)\right)$$
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<!--Szablon jakiegoś dalszego kontentu-->
+			<section class="container pb-3">
+				<div class="row">
+					<div class="col-lg-8 mx-auto">
+						<h2 class="fw-light">Dalszy content</h1>
+						
+						<p class="text-muted">
+							Tu powinien być dalszy content. Do poprzednich należy
+							dodać obrazki.
 						</p>
 					</div>
 				</div>
