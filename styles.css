@@ -3,6 +3,16 @@ strong_ml {
 	margin-left: 2px;
 }
 
+input[type="text"] {
+	width: 80%;
+    box-sizing: border-box;
+}
+
+input[type="button"] {
+	width: 18%;
+    box-sizing: border-box;
+}
+
 .bd-placeholder-img {
 	font-size: 1.125rem;
 	text-anchor: middle;
