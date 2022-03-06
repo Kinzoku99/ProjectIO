@@ -202,7 +202,7 @@ window.onload = () => {
 		else {
 			let el = document.getElementById("exactresult");
 			let res = result(input);
-			el.innerHTML = "$$\\int_0^{x} " + res[0] + " dx = "  + res[1] + "$$";
+			el.innerHTML = "$$\\int_0^{x} " + res[0] + "\\: dx = "  + res[1] + "$$";
 			// @ts-ignore
 			MathJax.typeset();
 		}
