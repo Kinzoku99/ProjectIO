@@ -1,0 +1,29 @@
+.strong_ml {
+	font-weight: bold;
+	font-size: 1.5rem;
+	margin-left: 8px;
+}
+
+input[type="text"] {
+	width: 80%;
+    box-sizing: border-box;
+}
+
+input[type="button"] {
+	width: 18%;
+    box-sizing: border-box;
+}
+
+.bd-placeholder-img {
+	font-size: 1.125rem;
+	text-anchor: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+@media (min-width: 768px) {
+	.bd-placeholder-img-lg {
+		font-size: 3.5rem;
+	}
+}
