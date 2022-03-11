@@ -10,7 +10,7 @@
 #define NUM_DESOLVERS_H
 #include <cinttypes>
 
-#define MAX_POINTS_ON_PLOT 1000
+#define MAX_POINTS_ON_PLOT 100
 
 
 typedef struct point_output_struct{

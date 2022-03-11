@@ -102,10 +102,11 @@ void rk4(double (*func)(double), double h, uint64_t step, uint16_t numOfPoints, 
 }
 
 solver_out_t des_runge_kutta(double (*func)(double), double x0, double h, double t0, double T, uint16_t rank = 4){
-    uint64_t n = ((T - t0) + h )/ h;
+    uint64_t n = ((std::abs(T - t0)) + h )/ h;
     T = t0 + n * h;
     
     uint64_t step = n / MAX_POINTS_ON_PLOT;
+    step += (step == 0);
     uint64_t numOfPoints = n / step;
     
     printf("step = %lu\t numOfPoints = %lu\t allpoints = %lu\n", step, numOfPoints, n);
@@ -120,8 +121,10 @@ solver_out_t des_runge_kutta(double (*func)(double), double x0, double h, double
             rk1(func, h, step, numOfPoints, points);
             break;
         case 2:
+            rk2(func, h, step, numOfPoints, points);
             break;
         case 3:
+            rk3(func, h, step, numOfPoints, points);
             break;
 //      case 4:
         default:
