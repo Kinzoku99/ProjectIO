@@ -24,3 +24,6 @@ Project for Software Engineering
 - Na wykresy z 3 główne (podustawień).
 - Na liczenie całki w punkcie z 3.
 - Dla konkretnego sposobu dokładność jak się da.
+
+
+https://elzap.eu/fotel-biurowy-shine-efg-101b,id-7794?gclid=EAIaIQobChMIrJ_yyKnP9gIVygWiAx1_Ow_9EAQYASABEgIgrPD_BwE
