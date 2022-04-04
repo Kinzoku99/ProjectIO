@@ -1,4 +1,4 @@
-datafile = "tests/rk4_test_output.txt"
+datafile = "tests/outputs/rk4_test_output.txt"
 # frow = system('head -1 '.datafile)
 # set xlabel word(frow, 1)
 # set ylabel word(frow, 2)

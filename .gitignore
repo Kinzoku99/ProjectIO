@@ -1,0 +1,14 @@
+# Ignorowane pliki w repozytorium:
+
+#### VScode ####
+.vscode/
+#### CMake ####
+backend/Makefile
+backend/CMakeCache.txt
+backend/CMakeFiles/*
+backend/cmake_install.cmake
+
+
+#### Testy ####
+backend/tests/outputs/*
+backend/tests/libraries/*
