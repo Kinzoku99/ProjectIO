@@ -9,7 +9,19 @@
 #ifndef NUM_INTEGRALS_H
 #define NUM_INTEGRALS_H
 
-double nint_trapezoids(double (*func)(double), double x0, double n);
+#include <cstdlib>
+
+/**
+ * @brief Procedura licząca całkę przy pomocy złożonej kwadratury trapezów
+ * 
+ */
+double trapezoid_quadrature_01(double (*function)(double), double h);
+/**
+ * @brief Procedura licząca całkę przy pomocy metody Romberga
+ *        dla złożonej kwadratury trapezów
+ */
+double romberg_quadrature_01(double (*function)(double), size_t num_of_divisions, double tol);
+
 double nint_gaussian(double (*func)(double), double x0, double n);
 double nint_QMC(double (*func)(double), double x0, double n);
 

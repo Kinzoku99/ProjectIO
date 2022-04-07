@@ -1,3 +1,9 @@
+# Plik do CMake
+
+# Dla każdego pliku ".cpp" ".c" ".cxx" w folderze backend/tests/src tworzy
+# plik wykonywalny w folderze backend/tests/ o takiej samej nazwie jak
+# plik źródłowy (bez rozszerzenia) odpowiednio go kompilując.
+
 cmake_minimum_required(VERSION 3.23)
 project(ProjectIO)
 
