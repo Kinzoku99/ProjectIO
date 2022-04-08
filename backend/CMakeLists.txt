@@ -7,6 +7,8 @@
 cmake_minimum_required(VERSION 3.23)
 project(ProjectIO)
 
+include(CTest)
+
 # Domyślny tryb wywołania CMake
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "Nie wybrano typu kompilacji, ustawienie domyślne to Release")
@@ -41,13 +43,14 @@ file(GLOB TEST_FILES CONFIGURE_DEPENDS
 )
     
 add_library(testing_lib ${SOURCE_FILES} ${TESTER_HEADER})
-    
+
 foreach(testsourcefile ${TEST_FILES})
     string(REGEX REPLACE ".*/" "" testname1 ${testsourcefile})
     string(REPLACE ".cpp" "" testname ${testname1})
     add_executable(${testname} ${testsourcefile})
     message(STATUS "Tworzenie pliku wykonywalnego: " ${testname})
     target_link_libraries(${testname} testing_lib)
+    add_test(NAME ${testname} COMMAND ${testname})
 endforeach(testsourcefile ${TEST_FILES})
 
 # Szuakmy Doxygena i tworzymy make doc, do stworzenia dokumentacji

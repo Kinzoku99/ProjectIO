@@ -12,3 +12,6 @@ backend/cmake_install.cmake
 #### Testy ####
 backend/tests/outputs/*
 backend/tests/libraries/*
+backend/CTestTestfile.cmake
+backend/DartConfiguration.tcl
+backend/Testing/

@@ -14,14 +14,19 @@
  * Wykorzytsujemy możliwość castowania capture-less wyrażeń lambda na 
  * wskaźniki do funkcji
  */
-#define MAKE_TEST(input, result)    \
-    {[](double x){return (input);}, \
-     [](double x){return (result);}}
+#define MAKE_TEST(input, result)        \
+    {                                   \
+        #input,                         \
+        #result,                        \
+        [](double x){return (input);},  \
+        [](double x){return (result);}  \
+    }
 
 /**
  * @brief Struktura na potrzeby testowania kalkulatorów
  */
 typedef struct {
+    const char name_input[256], name_result[256];
     double (*input)(double), (*result)(double);
 } test_and_result_t;
 

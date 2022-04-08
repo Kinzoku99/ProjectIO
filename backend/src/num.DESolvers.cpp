@@ -108,8 +108,6 @@ solver_out_t des_runge_kutta(double (*func)(double), double x0, double h, double
     uint64_t step = n / MAX_POINTS_ON_PLOT;
     step += (step == 0);
     uint64_t numOfPoints = n / step;
-    
-    printf("step = %lu\t numOfPoints = %lu\t allpoints = %lu\n", step, numOfPoints, n);
 
     ptout_t *points = new ptout_t[numOfPoints];
     points[0].x = t0;
