@@ -199,35 +199,62 @@ const ExactIntCalculator: React.FC = () => {
 
     return (
         <main>
-            {/* To jest sekcja nagłówka naszej strony czyli o czym to jest */}
-            <section className="container text-center py-5">
-                <div className="row py-lg-5">
-                    <div className="col-lg-6 col-md-8 mx-auto">
-                        <h1 className="fw-light">Kalkulator wielomianowy</h1>
+			<div>
+				
 
-                        <p className="lead text-muted">
-                            Ten kalkulator liczy funkcję pierwotną wielomianu.
-                        </p>
-                    </div>
-                </div>
-            </section>
 
-            <section className="container">
-                <div className="row">
-                    <div className="col-lg-6 col-md-8 mx-auto">
-                        <p className="text-muted">
-                            Wpisz wielomian w postaci ogólnej {iEQ("a_nx^n + \\ldots + a_1x + a_0")}:
-                        </p>
-                        <form>
-                            <input type="text" name="exactexpression" id="exactexpression" onChange={(e) => {setInput(e.target.value)}}/>
-                            <input type="button" value="Policz" name="exactbtn" id="exactbtn" onClick={handleClick}/>
-                        </form>
-                        <div id="exactresult" className="my-5">
-                            {EQ(result)}
-                        </div>
-                    </div>
-                </div>
-            </section>
+			<div className="album py-5"> 
+				<div className="container">
+				<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+						
+						{Array(12).fill(0).map(() => (
+						<div className="col">
+							<div className="card shadow-sm">
+								<svg className="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Grafika" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Grafika</text></svg>
+
+								<div className="card-body">
+									<p className="card-text">Twierdzenie Stolca.</p>
+								</div>
+							</div>
+						</div>))}
+
+					</div>
+				</div>
+				</div>
+					
+			</div>
+
+			<div className="calculator-panel">
+				{/* To jest sekcja nagłówka naszej strony czyli o czym to jest */}
+				<section className="container text-center py-5">
+					<div className="row py-lg-5">
+						<div className="col-lg-6 col-md-8 mx-auto">
+							<h1 className="fw-light">Kalkulator wielomianowy</h1>
+
+							<p className="lead text-muted">
+								Ten kalkulator liczy funkcję pierwotną wielomianu.
+							</p>
+						</div>
+					</div>
+				</section>
+
+				<section className="container">
+					<div className="row">
+						<div className="col-lg-6 col-md-8 mx-auto">
+							<p className="text-muted">
+								Wpisz wielomian w postaci ogólnej {iEQ("a_nx^n + \\ldots + a_1x + a_0")}:
+							</p>
+							<form>
+								<input type="text" name="exactexpression" id="exactexpression" onChange={(e) => {setInput(e.target.value)}}/>
+								<input type="button" value="Policz" name="exactbtn" id="exactbtn" onClick={handleClick}/>
+							</form>
+							<div id="exactresult" className="my-5">
+								{EQ(result)}
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
         </main>
     );
 }

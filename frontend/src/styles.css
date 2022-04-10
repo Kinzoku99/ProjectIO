@@ -22,6 +22,29 @@ input[type="button"] {
 	user-select: none;
 }
 
+.navbar {
+	height: 3.5rem;
+}
+
+.calculator-panel {
+	background-color: rgba(255,255,255,0.8);
+	top: 0px !important;
+	z-index: 99999;
+	position: fixed;
+	margin-top: 3.5rem;
+	min-width: 100vw;
+}
+
+.main {
+	position: relative;
+}
+
+#root {
+	background-color: rgb(222, 234, 250);
+	min-height: 100vh;
+	position: relative;
+}
+
 @media (min-width: 768px) {
 	.bd-placeholder-img-lg {
 		font-size: 3.5rem;
