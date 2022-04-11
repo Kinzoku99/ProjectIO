@@ -106,3 +106,8 @@ input[type="button"] {
 		display: none;
 	}
 }
+
+.math-multiline {
+	max-height: 100px;
+	overflow-y: auto;
+}
