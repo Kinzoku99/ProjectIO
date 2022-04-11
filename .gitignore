@@ -12,3 +12,41 @@ backend/cmake_install.cmake
 #### Testy ####
 backend/tests/outputs/*
 backend/tests/libraries/*
+
+#### API ####
+api/.idea
+api/*/__pycache__
+
+#### Frontend ####
+# Default ignored files
+frontend/shelf/
+frontend/workspace.xml
+frontend/.idea
+# Editor-based HTTP Client requests
+frontend/httpRequests/
+
+# dependencies
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js
+
+# testing
+frontend/coverage
+
+# production
+frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+#### pybind ####
+pybind/build
+pybind/pybind11
