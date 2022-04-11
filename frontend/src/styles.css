@@ -108,6 +108,10 @@ input[type="button"] {
 }
 
 .math-multiline {
-	max-height: 100px;
-	overflow-y: auto;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	max-height: 5rem;
+	text-overflow: ellipsis;
+	overflow-wrap: unset;
+	white-space: nowrap;
 }
