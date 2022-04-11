@@ -18,15 +18,9 @@ api/.idea
 api/*/__pycache__
 
 #### Frontend ####
-# Default ignored files
-frontend/shelf/
-frontend/workspace.xml
-frontend/.idea
-# Editor-based HTTP Client requests
-frontend/httpRequests/
-
 # dependencies
 frontend/node_modules
+frontend/.idea
 frontend/.pnp
 frontend/.pnp.js
 
