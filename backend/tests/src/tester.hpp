@@ -4,15 +4,24 @@
 #include <cassert>
 #include <cstdio>
 #include <functional>
+#include <vector>
+#include <string>
+#include <algorithm>
 
+// Definicja "real_function"
+#include "../../src/conventions.hpp"
+
+/** @brief Assert z wypisaniem wiadomości na STDERR */
 #define assert_printf(expr, fmtStr, ...)    \
-    for (; static_cast<bool> (!(expr)); __assert_fail(#expr, __FILE__, __LINE__, __ASSERT_FUNCTION))\
+    for (; static_cast<bool> (!(expr))      \
+         ; __assert_fail(#expr, __FILE__, __LINE__, __ASSERT_FUNCTION))\
         fprintf(stderr, fmtStr, __VA_ARGS__)
+
 
 /**
  * @brief Makro tworzące obiekt testowy.
  * Wykorzytsujemy możliwość castowania capture-less wyrażeń lambda na 
- * wskaźniki do funkcji
+ * wskaźniki do funkcji lub do obiektu typu std::function<double(double)>
  */
 #define MAKE_TEST(input, result)        \
     {                                   \
@@ -23,34 +32,113 @@
     }
 
 /**
- * @brief Struktura na potrzeby testowania kalkulatorów
+ * @brief Klasa pojdeynczego testu.
+ * 
+ * Zawiera dwie funkcje:
+ * @param input funkcja wejściowa double -> double, integrowana
+ * @param result funkcja wyjściowa double -> double, pierwotna
+ * Oraz ich opisy słowne, najczęście używane wraz z makrem @ref MAKE_TEST
  */
-typedef struct {
-    const char name_input[256], name_result[256];
-    double (*input)(double), (*result)(double);
-} test_and_result_t;
+class Testing_unit {
+    public:
+    // Testy są niezmienialne, po utworzeniu
+    const real_function input, result;
+    const std::string input_name, result_name;
 
-
+    Testing_unit(
+        const std::string &name_i,
+        const std::string &name_r,
+        const real_function &in,
+        const real_function &r
+    )
+      : input(in),
+        result(r),
+        input_name(name_i),
+        result_name(name_r)
+    {}
+};
 /**
- * @brief Makro służace do "ładowania" testów do wykonania
+ * @brief Klasa agregatora testów.
+ * 
  */
-#define TESTS_TO_RUN test_and_result_t __tester_struct[]
+class Tester {
+private:
+    std::vector<Testing_unit> tests_to_do;
+public:
+    // Konstruktor z listy testów
+    explicit Tester(std::initializer_list<Testing_unit> list)
+      :  tests_to_do(list)
+    {}
+
+    // Odwołanie do konkretnego testu
+    const Testing_unit &operator[](size_t index){
+        return tests_to_do.at(index);
+    }
+
+    /**
+     * Umożliwiamy użycie pętli for each
+     */ 
+
+    std::vector<Testing_unit>::const_iterator begin(){
+        return tests_to_do.begin();
+    }
+
+    std::vector<Testing_unit>::const_iterator end(){
+        return tests_to_do.end();
+    }
+
+    /**
+     * Templatki pozwalające na wywołanie dowolnej metody na testach
+     * lub na poszczególnym teście.
+     * 
+     * Użycie, przykład: Ewluacja funkcji całkowanych w punkcie.
+     *  Tester T = {MAKE_TEST(2*x, pow(x,2))};
+     *  my_val = 2;
+     *  std::vector<double> eval_input_at_my_val =
+     *  T.apply_all_tests(
+     *      [](const Testing_unit &test, double my_val))
+     *      -> double {
+     *          return test.input(my_val);
+     *      },
+     *      my_val
+     *  );
+     */
+
+    template <typename R, typename... Args>
+    std::vector<R> apply_all_tests(std::function<R(const Testing_unit&, Args...)> method, Args... params){
+        std::vector<R> results;
+        results.reserve(tests_to_do.size());
+        
+        for (const Testing_unit &test : tests_to_do)
+            results.push_back(method(test, params...));
+        
+        return results;
+    }
+
+    template <typename R, typename... Args>
+    std::vector<R> apply_all_tests(R(*method)(const Testing_unit&, Args...), Args... params){
+        std::vector<R> results;
+        results.reserve(tests_to_do.size());
+        
+        for (const Testing_unit &test : tests_to_do)
+            results.push_back(method(test, params...));
+        
+        return results;
+    }
 
 
-/**
- * @brief Odwołanie do struktury przechowującej testy
- */
-#define TESTS   __tester_struct
+    template <typename R, typename... Args>
+    R apply_to_test(size_t index, std::function<R(const Testing_unit&, Args...)> method, Args... params){
+        return method(tests_to_do.at(index), params...);
+    }
 
-/**
- * @brief Odwołanie od @p x -tego testu, względem kolejności ładowania!
- */
-#define TEST(x) __tester_struct[x]
+    template <typename R, typename... Args>
+    R apply_to_test(size_t index,R(*method)(const Testing_unit&, Args...), Args... params){
+        return method(tests_to_do.at(index), params...);
+    }
+};
 
-/**
- * @brief Makro pomagające w ustaleniu liczby testów
- */
-#define TESTS_SIZE sizeof(__tester_struct)/sizeof(test_and_result_t)
+
 
 
 
