@@ -16,6 +16,7 @@ backend/tests/libraries/*
 #### API ####
 api/.idea
 api/*/__pycache__
+api/*/*/__pycache__
 
 #### Frontend ####
 # dependencies
@@ -44,6 +45,12 @@ frontend/yarn-error.log*
 #### pybind ####
 pybind/build
 pybind/pybind11
+pybind/.idea
+pybind/cmake-build-debug
+
+#### backend ####
 backend/CTestTestfile.cmake
 backend/DartConfiguration.tcl
 backend/Testing/
+backend/.idea
+backend/cmake-build-debug
