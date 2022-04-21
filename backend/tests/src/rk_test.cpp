@@ -1,43 +1,61 @@
-#include "src/num.DESolvers.hpp"
+#include "../../src/num.DESolvers.hpp"
 #include <cstdlib>
 #include <cinttypes>
 #include <cstdio>
 #include <cstdint>
 #include <cmath>
+#include <atomic>
 
-#include <tests/src/tester.hpp>
+#include "tester.hpp"
 
-//TEST:   num   input       result
-MAKE_TEST(0,    2*x,        pow(x,2))
-MAKE_TEST(1,    3*pow(x,2), pow(x,3))
-MAKE_TEST(2,    exp(x),     exp(x))
-MAKE_TEST(3,    sqrt(x),    1/(2*sqrt(x)))
-
-TESTS_TO_RUN = {
-    ADD_TEST(0),
-    ADD_TEST(1),
-    ADD_TEST(2),
-    ADD_TEST(3)
+Tester TESTS_TO_RUN
+{
+    //        INPUT         RESULT
+    MAKE_TEST(2*x,          pow(x,2)),
+    MAKE_TEST(3*pow(x,2),   pow(x,3)),
+    MAKE_TEST(exp(x),       exp(x)),
+    MAKE_TEST(1/(2*sqrt(x)),sqrt(x)),
 };
 
 int main(){
-    FILE *output = fopen("tests/outputs/rk4_test_output.txt", "w+");
-    solver_out_t out = des_runge_kutta(TEST(1).input_function, 0, 0.000001, 0, 1, 4);
-    for (size_t i = 0; i < 10; ++i){
-        printf("%15lf, %15lf\n", TEST(1).input_function(i), TEST(1).result_function(i));
+    double int_start = 0.01;
+    double int_end = 10;
+    double step = 1e-6;
+    size_t test_num = 0;
+    size_t rank = 4;
+
+    auto results = TESTS_TO_RUN.apply_all_tests(
+        +[](const Testing_unit&test, double h, double t0, double T, size_t rank, size_t *tid)
+        ->  double {
+              auto result = des_runge_kutta(test.input, test.result(t0), h, t0, T, rank);
+
+              std::string file = "tests/outputs/rk_test_" + std::to_string(*tid) + ".txt";
+              FILE *output = fopen(file.c_str(), "w+");
+
+              double error2 = 0;
+              for (const point_t &p : result){
+                  error2 += pow((test.result(p.x) - p.y),2);
+                  fprintf(output, "%.15lf %.15lf\n", p.x, p.y);
+              }
+              error2 = std::sqrt(error2);
+
+              fclose(output);
+              ++(*tid);
+              return error2;
+            },
+        step, int_start, int_end, rank, &test_num
+    );
+
+    for (size_t i = 0; i < results.size(); ++i){
+        printf("RK_TEST for:\nf(x) = %s,\tF(x) = %s\n[ERROR := %.15lf]\n\n",
+               TESTS_TO_RUN[i].input_name.c_str(),
+               TESTS_TO_RUN[i].result_name.c_str(),
+               results[i]
+        );
+
+        assert_printf(
+            results[i] < 1e-3,
+            "Dokładność [%e] nieosiągnięta! Należy zmniejszyć krok metody lub zwiększyć rząd.", 1e-3
+            );
     }
-
-    double error2 = 0;
-    for (uint64_t i = 0; i < out.numOfPoints; ++i){
-        error2 += (TEST(1).result_function(out.points[i].x) - out.points[i].y)*(TEST(1).result_function(out.points[i].x) - out.points[i].y);
-        fprintf(output, "%.15lf %.15lf\n", out.points[i].x, out.points[i].y);
-    }
-    error2 = std::sqrt(error2);
-
-    printf("ERROR := %.15lf\n", error2);
-
-    delete[] out.points;
-    
-    fclose(output);    
-
 }

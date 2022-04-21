@@ -9,22 +9,32 @@
 #ifndef NUM_DESOLVERS_H
 #define NUM_DESOLVERS_H
 #include <cinttypes>
+#include <functional>
+#include <vector>
+
+// Definicja real_function
+#include "conventions.hpp"
 
 #define MAX_POINTS_ON_PLOT 100
 
 
-typedef struct point_output_struct{
+
+class point_t {
+    public:
     double x, y;
-} ptout_t;
+};
+using solver_out_t = std::vector<point_t>;
 
-typedef struct solver_output_struct{
-    ptout_t *points;
-    uint64_t numOfPoints;
-} solver_out_t;
-
-solver_out_t des_runge_kutta(double (*func)(double), double x0, double h, double t0, double T, uint16_t rank);
-solver_out_t des_adams_bashforth(double (*func)(double), double x0, double h, double t0, double T);
-solver_out_t des_FEM(double (*func)(double), double x0, double h, double t0, double T);
+solver_out_t des_runge_kutta(
+    real_function integrand,
+    double initial_value,
+    double step_size,
+    double begin_of_integrating_interval,
+    double end_of_integrating_interval,
+    uint16_t rank_of_solver
+);
+solver_out_t des_adams_bashforth(real_function func, double x0, double h, double t0, double T);
+solver_out_t des_FEM(real_function func, double x0, double h, double t0, double T);
 
 
 

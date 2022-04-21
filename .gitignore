@@ -44,3 +44,6 @@ frontend/yarn-error.log*
 #### pybind ####
 pybind/build
 pybind/pybind11
+backend/CTestTestfile.cmake
+backend/DartConfiguration.tcl
+backend/Testing/
