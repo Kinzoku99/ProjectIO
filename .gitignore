@@ -44,7 +44,6 @@ frontend/yarn-error.log*
 
 #### pybind ####
 pybind/build
-pybind/pybind11
 pybind/.idea
 pybind/cmake-build-debug
 
