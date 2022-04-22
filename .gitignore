@@ -15,8 +15,7 @@ backend/tests/libraries/*
 
 #### API ####
 api/.idea
-api/*/__pycache__
-api/*/*/__pycache__
+**/__pycache__
 
 #### Frontend ####
 # dependencies
