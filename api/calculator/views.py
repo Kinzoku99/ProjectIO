@@ -2,17 +2,18 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from math import sin, cos, tan
+import NumInt
 
 
 @api_view(['POST'])
 def trapezoid_quadrature_01(request):
-    result = 1
+    result = NumInt.trapezoid_quadrature_01(request.data["function"], float(request.data["step_size"]))
     return Response({'result': result})
 
 
 @api_view(['POST'])
 def romberg_quadrature_01(request):
-    result = 1
+    result = NumInt.romberg_quadrature_01(request.data["function"], int(request.data["num_of_divisions"]), float(request.data["tol"]))
     return Response({'result': result})
 
 

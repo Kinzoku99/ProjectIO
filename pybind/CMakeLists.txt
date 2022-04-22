@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.4)
-project(demo)
+
+project(NumInt CXX)
 add_subdirectory(pybind11)
-pybind11_add_module(demo example.cpp)
+pybind11_add_module(NumInt NumInt.cpp exprtk.hpp)
