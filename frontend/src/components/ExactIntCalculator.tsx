@@ -176,6 +176,18 @@ function calculateResult(input: string) {
     return [poly.print(), poly.integrate().print()];
 }
 
+class IntegralGraphics {
+    public source : string;
+    public text : string;
+
+    public constructor(source : string, text : string) {
+        this.source = source;
+        this.text = text;
+    }
+};
+
+const IntegralGraphicsList = Array(12).fill(new IntegralGraphics("int1.png", "\\int_{\\mathbb{R}} \\frac{\\cos x}{1+x^2}=\\frac{\\pi}{e}"));
+
 const ExactIntCalculator: React.FC = () => {
     let [input, setInput] = useState<string>("");
     let [result, setResult] = useState<string>("");
@@ -213,18 +225,20 @@ const ExactIntCalculator: React.FC = () => {
 
     return (
         <main>
+            <div className="panel-filler"></div>
+
 			<div className="main-content">
 				<div>
 					<div className="album py-5"> 
 						<div className="container">
 							<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">	
-								{Array(12).fill(0).map(() => (
+								{IntegralGraphicsList.map((integralGraphics) => (
 								<div className="col">
 									<div className="card shadow-sm">
-										<svg className="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Grafika" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Grafika</text></svg>
+                                        <img src={integralGraphics.source}></img>
 
 										<div className="card-body">
-											<p className="card-text">Twierdzenie Stolca.</p>
+											<p className="card-text">{EQ(integralGraphics.text)}</p>
 										</div>
 									</div>
 								</div>))}

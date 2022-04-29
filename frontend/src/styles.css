@@ -34,8 +34,13 @@ input[type="button"] {
 	position: fixed;
 	margin-top: 3.5rem;
 	min-width: 100vw;
+	min-height: 35vh;
 	/*min-height: 100vh;*/
 	border-bottom: solid 0.01rem;
+}
+
+.panel-filler {
+	height: 35vh;
 }
 
 .main {
@@ -107,10 +112,10 @@ input[type="button"] {
 	}
 }
 
-.math-multiline {
-	overflow-x: scroll;
+#exactresult .math-multiline {
+	overflow-x: auto;
 	overflow-y: hidden;
-	max-height: 5rem;
+	max-height: 6rem;
 	text-overflow: ellipsis;
 	overflow-wrap: unset;
 	white-space: nowrap;
