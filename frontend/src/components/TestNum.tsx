@@ -47,7 +47,7 @@ const TestNum: React.FC = () => {
                 function: formData.formula,
                 beg_x: -50,
                 end_x: 50,
-                step: 0.1
+                step_size: 0.1
             }
 
             fetch(currentURL + 'calculator/trapezoid_quadrature_01/', {

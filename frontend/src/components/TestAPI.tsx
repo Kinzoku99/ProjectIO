@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import currentURL from "../URLconfig";
 import BigGraph from "./BigGraph";
+import {CalculatorSettings} from "../calculatorSettings";
 
 type FormData = {
     formula: string
@@ -19,12 +20,14 @@ const TestAPI: React.FC = () => {
         if (isFormulaValid) {
             const values = {
                 function: formData.formula,
-                beg_x: -50,
-                end_x: 50,
-                step: 0.1
+                initial_value: CalculatorSettings.initial_value,
+                step_size: CalculatorSettings.step_size,
+                begin_of_integrating_interval: CalculatorSettings.begin_of_integrating_interval,
+                end_of_integrating_interval: CalculatorSettings.end_of_integrating_interval,
+                rank_of_solver: CalculatorSettings.rank_of_solver
             }
 
-            fetch(currentURL + 'calculator/graph/', {
+            fetch(currentURL + 'calculator/des_runge_kutta/', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {'Content-Type': 'application/json'},

@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {EQ, iEQ} from "../mathOutputFunctions";
+import BigGraph from "./BigGraph";
 
 
 // TODO typowanie w funkcjach do obliczania jeszcze do poprawki
