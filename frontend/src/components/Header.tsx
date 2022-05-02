@@ -1,28 +1,9 @@
 import React, {useState} from "react";
-import HeaderToast from "./HeaderToast";
-import {ToastContainer} from "react-bootstrap";
+import {Toast, ToastContainer} from "react-bootstrap";
 
 const Header: React.FC = () => {
-    let [toast1, setToast1] = useState<JSX.Element>();
-    let [toast2, setToast2] = useState<JSX.Element>();
-
-    // TODO do poprawienia na referencje
-    const showToast1 = () => {
-        setToast1(
-            <HeaderToast
-                toastHeader="Kontakt"
-                toastMessage={"Ewentualne problemy prosimy zgłaszać na\ne-mail: integralteam@gmail.com"}
-            />
-        );
-    }
-    const showToast2 = () => {
-        setToast2(
-            <HeaderToast
-                toastHeader="Źródła"
-                toastMessage={"Tu będą jakieś źródła."}
-            />
-        );
-    }
+    let [toast1Visible, setToast1Visible] = useState<boolean>(false);
+    let [toast2Visible, setToast2Visible] = useState<boolean>(false);
 
     return (
         <div>
@@ -81,12 +62,12 @@ const Header: React.FC = () => {
                                     <ul className="dropdown-menu">
                                         <li className="dropdown-item">
                                             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                                            <a className="nav-link" id="contact" href="#" onClick={showToast1}>Kontakt</a>
+                                            <a className="nav-link" id="contact" href="#" onClick={() => setToast1Visible(() => true)}>Kontakt</a>
                                         </li>
 
                                         <li className="dropdown-item">
                                             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                                            <a className="nav-link" id="sources" href="#" onClick={showToast2}>Źródła</a>
+                                            <a className="nav-link" id="sources" href="#" onClick={() => setToast2Visible(() => true)}>Źródła</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -101,8 +82,28 @@ const Header: React.FC = () => {
             </header>
             <div className="position-fixed top-2 end-0 p-2" style={{zIndex: 10}}>
                 <ToastContainer>
-                    {toast1}
-                    {toast2}
+                    <Toast show={toast1Visible} onClose={() => setToast1Visible(() => false)} animation={true}>
+                        <Toast.Header>
+                            <svg className="bd-placeholder-img rounded me-2" width="20" height="20"
+                                 xmlns={"http://www.w3.org/2000/svg"} aria-hidden="true" preserveAspectRatio="xMidYMid slice"
+                                 focusable="false">
+                                <rect width="100%" height="100%" fill="#007aff"/>
+                            </svg>
+                            <strong className="me-auto">Kontakt</strong>
+                        </Toast.Header>
+                        <Toast.Body>{"Ewentualne problemy prosimy zgłaszać na\ne-mail: integralteam@gmail.com"}</Toast.Body>
+                    </Toast>
+                    <Toast show={toast2Visible} onClose={() => setToast2Visible(() => false)} animation={true}>
+                        <Toast.Header>
+                            <svg className="bd-placeholder-img rounded me-2" width="20" height="20"
+                                 xmlns={"http://www.w3.org/2000/svg"} aria-hidden="true" preserveAspectRatio="xMidYMid slice"
+                                 focusable="false">
+                                <rect width="100%" height="100%" fill="#007aff"/>
+                            </svg>
+                            <strong className="me-auto">Źródła</strong>
+                        </Toast.Header>
+                        <Toast.Body>Tu będą jakieś źródła.</Toast.Body>
+                    </Toast>
                 </ToastContainer>
             </div>
         </div>
