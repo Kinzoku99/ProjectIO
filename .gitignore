@@ -10,4 +10,6 @@ CTestTestfile*
 CMakeFiles
 cmake*
 DartConfiguration.tcl
+Testing/
+
 !CMakeLists.txt

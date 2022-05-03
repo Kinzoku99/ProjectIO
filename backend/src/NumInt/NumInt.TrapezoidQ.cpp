@@ -5,6 +5,9 @@
 #include <cstdio>
 #include <cassert>
 
+// #include <pybind11/pybind11.h>
+//
+// namespace py = pybind11;
 
 /* Metoda Romberga oferuje zbieżność rzędu
  * O( h^(2 + 2*MAX_ROMBERG_STEPS) )
@@ -152,3 +155,12 @@ double romberg_quadrature_01(
     // najelpszego przybliżenia
     return romberg_evals[MAX_ROMBERG_STEPS - 1];
 }
+
+
+// Zakomentowane
+
+// PYBIND11_MODULE(NumIntTrapezoid, handle){
+//     handle.doc() = "";
+//     handle.def("integrate_trapezoid", &integrate_trapezoid);
+//     handle.def("integrate_romberg", &integrate_romberg);
+// }

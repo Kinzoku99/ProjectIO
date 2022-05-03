@@ -4,6 +4,10 @@
 #include <cstdio>
 #include <cmath>
 
+// #include <pybind11/pybind11.h>
+//
+// namespace py = pybind11;
+
 
 void rk1(const real_function &func, double h, uint64_t step, uint16_t numOfPoints, solver_out_t &points){
     if (step > 1) {
@@ -175,3 +179,7 @@ solver_out_t des_runge_kutta(const std::string &func_expr, const std::string &va
     return points;
 }
 
+// PYBIND11_MODULE(NumODERungeKutta, handle) {
+//     handle.doc() = "";
+//     handle.def("des_runge_kutta", &des_runge_kutta);
+// }
