@@ -1,0 +1,11 @@
+*
+!/MainHeaders
+!/MainHeaders/*
+
+!/NumInt
+!/NumInt/*
+
+!/NumODE
+!/NumODE/*
+
+!.gitignore

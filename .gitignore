@@ -2,3 +2,12 @@
 
 #### VScode ####
 .vscode/
+
+#### Podstawowe pliki CMake ####
+CMakeCache*
+MakeFile
+CTestTestfile*
+CMakeFiles
+cmake*
+DartConfiguration.tcl
+!CMakeLists.txt
