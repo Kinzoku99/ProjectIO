@@ -4,6 +4,6 @@ if (ARGC != 1) {
     exit;
 }
 
-datafile = sprintf("tests/outputs/rk_test_%s.txt", ARG1)
+datafile = sprintf("tests/outputs/rk_out%s.txt", ARG1)
 plot datafile using 1:2
 pause -1
