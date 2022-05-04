@@ -72,9 +72,9 @@ const Header: React.FC = () => {
                     </div>
                 </nav>
             </header>
-            <div className="position-fixed top-2 end-0 p-2" style={{zIndex: 10}}>
+            <div className="position-fixed top-2 end-0 p-2" style={{zIndex: 200}}>
                 <ToastContainer>
-                    <Toast show={toast1Visible} onClose={() => setToast1Visible(() => false)} animation={true}>
+                    <Toast show={toast1Visible} autohide={true} onClose={() => setToast1Visible(() => false)} animation={true}>
                         <Toast.Header>
                             <svg className="bd-placeholder-img rounded me-2" width="20" height="20"
                                  xmlns={"http://www.w3.org/2000/svg"} aria-hidden="true" preserveAspectRatio="xMidYMid slice"
@@ -85,7 +85,7 @@ const Header: React.FC = () => {
                         </Toast.Header>
                         <Toast.Body>{"Ewentualne problemy prosimy zgłaszać na\ne-mail: integralteam@gmail.com"}</Toast.Body>
                     </Toast>
-                    <Toast show={toast2Visible} onClose={() => setToast2Visible(() => false)} animation={true}>
+                    <Toast show={toast2Visible} autohide={true} onClose={() => setToast2Visible(() => false)} animation={true}>
                         <Toast.Header>
                             <svg className="bd-placeholder-img rounded me-2" width="20" height="20"
                                  xmlns={"http://www.w3.org/2000/svg"} aria-hidden="true" preserveAspectRatio="xMidYMid slice"
