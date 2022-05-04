@@ -42,17 +42,13 @@ const Header: React.FC = () => {
                                         </li>
 
                                         <li className="dropdown-item">
-                                            <a className="nav-link" href="/graphs">Wykresy funkcji pierwotnych</a>
+                                            <a className="nav-link" href="/antiderivativegraphs">Wykresy funkcji pierwotnych</a>
                                         </li>
 
                                         <li className="dropdown-item">
                                             <a className="nav-link" href="/exactint">Dokładne funkcje pierwotne</a>
                                         </li>
                                     </ul>
-                                </li>
-
-                                <li className="nav-item">
-                                    <a className="nav-link" href="/settings">Ustawienia</a>
                                 </li>
 
                                 <li className="nav-item dropdown">
@@ -70,10 +66,6 @@ const Header: React.FC = () => {
                                             <a className="nav-link" id="sources" href="#" onClick={() => setToast2Visible(() => true)}>Źródła</a>
                                         </li>
                                     </ul>
-                                </li>
-
-                                <li className="nav-item">
-                                    <a className="nav-link" href="/login" style={{color: "navy"}}>zaloguj się</a>
                                 </li>
                             </ul>
                         </div>

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {EQ, iEQ} from "../mathOutputFunctions";
-import BigGraph from "./BigGraph";
+import Gallery from "./Gallery";
 
 
 // TODO typowanie w funkcjach do obliczania jeszcze do poprawki
@@ -177,21 +177,10 @@ function calculateResult(input: string) {
     return [poly.print(), poly.integrate().print()];
 }
 
-class IntegralGraphics {
-    public source : string;
-    public text : string;
-
-    public constructor(source : string, text : string) {
-        this.source = source;
-        this.text = text;
-    }
-};
-
-const IntegralGraphicsList = Array(12).fill(new IntegralGraphics("int1.png", "\\int_{\\mathbb{R}} \\frac{\\cos x}{1+x^2}=\\frac{\\pi}{e}"));
-
 const ExactIntCalculator: React.FC = () => {
     let [input, setInput] = useState<string>("");
     let [result, setResult] = useState<string>("");
+    let [inputValid, setInputValid] = useState<string>("");
 
     function handleClick() {
         let data = input.split(' ').join('').replaceAll("-","+-").replaceAll("-x","-1x")
@@ -201,11 +190,12 @@ const ExactIntCalculator: React.FC = () => {
             data = data.substring(1);
 
         if (!testInput(data)) {
-            alert("Bad input");
+            setInputValid(" is-invalid");
             setResult("");
         }
         else {
             let res = calculateResult(data);
+            setInputValid(" is-valid");
             setResult("\\int_0^{x} " + res[0] + "\\: dx = " + res[1]);
         }
     }
@@ -226,27 +216,10 @@ const ExactIntCalculator: React.FC = () => {
 
     return (
         <main>
-            <div className="panel-filler"></div>
+            <div className="panel-filler"/>
 
 			<div className="main-content">
-				<div>
-					<div className="album py-5"> 
-						<div className="container">
-							<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">	
-								{IntegralGraphicsList.map((integralGraphics) => (
-								<div className="col">
-									<div className="card shadow-sm">
-                                        <img src={integralGraphics.source}></img>
-
-										<div className="card-body">
-											<p className="card-text">{EQ(integralGraphics.text)}</p>
-										</div>
-									</div>
-								</div>))}
-							</div>
-						</div>
-					</div>
-				</div>
+				<Gallery />
 				
 				<div className="calculator-panel">
 					{/* To jest sekcja nagłówka naszej strony czyli o czym to jest */}
@@ -268,13 +241,28 @@ const ExactIntCalculator: React.FC = () => {
 								<p className="text-muted">
 									Wpisz wielomian w postaci ogólnej {iEQ("a_nx^n + \\ldots + a_1x + a_0")}:
 								</p>
-								<form>
-									<input type="text" name="exactexpression" id="exactexpression" onChange={(e) => {setInput(e.target.value)}}/>
-									<input type="button" value="Policz" name="exactbtn" id="exactbtn" onClick={handleClick}/>
-								</form>
-								<div id="exactresult" className="my-5">
-									{EQ(result)}
-								</div>
+                                <form className="row">
+                                    <input
+                                        type="text"
+                                        className={"form-control" + inputValid}
+                                        name="exactexpression"
+                                        id="exactexpression"
+                                        style={{width: "80%"}}
+                                        onChange={(e) => {setInput(e.target.value)}}
+                                    />
+                                    <input
+                                        type="button"
+                                        className="btn btn-outline-secondary"
+                                        value="Policz"
+                                        name="exactbtn"
+                                        id="exactbtn"
+                                        style={{width: "20%"}}
+                                        onClick={handleClick}
+                                    />
+                                </form>
+                                <div id="exactresult" className="my-5">
+                                    {EQ(result)}
+                                </div>
 							</div>
 						</div>
 					</section>

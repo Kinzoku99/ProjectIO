@@ -4,16 +4,6 @@
 	margin-left:	8px;
 }
 
-input[type="text"] {
-	width: 			80%;
-	box-sizing: 	border-box;
-}
-
-input[type="button"] {
-	width: 			18%;
-	box-sizing: 	border-box;
-}
-
 .bd-placeholder-img {
 	font-size: 				1.125rem;
 	text-anchor: 			middle;
@@ -120,4 +110,12 @@ input[type="button"] {
 	text-overflow: ellipsis;
 	overflow-wrap: unset;
 	white-space: nowrap;
+}
+
+.btn-calc-form {
+	background-color: white !important;
+}
+
+.btn-calc-form:active, .btn-calc-form:hover {
+	background-color: #6c757d !important;
 }

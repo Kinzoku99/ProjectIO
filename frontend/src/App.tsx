@@ -4,8 +4,8 @@ import Header from "./components/Header";
 import MainPage from "./components/MainPage";
 import ErrorPage from "./components/ErrorPage";
 import ExactIntCalculator from "./components/ExactIntCalculator";
-import TestAPI from "./components/TestAPI";
-import TestNum from "./components/TestNum";
+import IntValueCalculator from "./components/IntValueCalculator";
+import AntiderivativeGraphsCalculator from "./components/AntiderivativeGraphsCalculator";
 
 function App() {
     return (
@@ -14,8 +14,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<MainPage/>}/>
                 <Route path="/exactint" element={<ExactIntCalculator/>}/>
-                <Route path="/test/graph" element={<TestAPI/>}/>
-                <Route path="/test/num" element={<TestNum/>}/>
+                <Route path="/intvalue" element={<IntValueCalculator/>}/>
+                <Route path="/antiderivativegraphs" element={<AntiderivativeGraphsCalculator/>}/>
                 <Route path="/*" element={<ErrorPage errorCode={404} errorMessage="Nie znaleziono strony"/>}/>
             </Routes>
         </BrowserRouter>

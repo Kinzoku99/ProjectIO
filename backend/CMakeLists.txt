@@ -4,7 +4,7 @@
 # plik wykonywalny w folderze backend/tests/ o takiej samej nazwie jak
 # plik źródłowy (bez rozszerzenia) odpowiednio go kompilując.
 
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.21)
 project(ProjectIO)
 
 # Testowanie przy pomocy make test lub ctest

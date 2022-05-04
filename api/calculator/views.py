@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from math import sin, cos, tan
 from rest_framework.status import HTTP_400_BAD_REQUEST
+from calculate_graph import calculate_graph
 
 import numIntTrapezoidQ
 import numDESolvers
@@ -53,25 +54,6 @@ def graph(request):
     end_x = float(request.data["end_x"])
     step = float(request.data["step_size"])
 
-    prev_char = ''
-    i = 0
+    result = calculate_graph(function, beg_x, end_x, step)
 
-    while i < len(function):
-        if prev_char.isnumeric() and function[i].isalpha():
-            function = function[:i] + '*' + function[i:]
-            i += 1
-        prev_char = function[i]
-        i += 1
-
-    function = function.replace("^", " ** ")
-
-    x_values = []
-    y_values = []
-
-    while beg_x <= end_x:
-        x_values.append(beg_x)
-        x = beg_x
-        y_values.append(eval(function))
-        beg_x += step
-
-    return Response({'x_values': x_values, 'y_values': y_values})
+    return Response({'x_values': result['x_values'], 'y_values': result['y_values']})
