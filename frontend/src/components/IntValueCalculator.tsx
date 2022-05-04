@@ -48,11 +48,15 @@ const IntValueCalculator: React.FC = () => {
                     if (response.status === 400) {
                         setInputValid(" is-invalid");
                         setResult("");
+                        return null;
                     }
                     return response.json();
                 })
                     .then((data) => {
-                        setResult(roundFloat(data.result));
+                        if (data !== null) {
+                            setResult("\\int_0^1 dx\\: \\: " + formData.formula + " = " + roundFloat(data.result));
+                            setInputValid("");
+                        }
                     });
             }
             else {
@@ -65,11 +69,15 @@ const IntValueCalculator: React.FC = () => {
                     if (response.status === 400) {
                         setInputValid(" is-invalid");
                         setResult("");
+                        return null;
                     }
                     return response.json();
-                })
+                    })
                     .then((data) => {
-                        setResult(roundFloat(data.result));
+                        if (data !== null) {
+                            setResult("\\int_0^1 dx\\: \\: " + formData.formula + " = " + roundFloat(data.result));
+                            setInputValid("");
+                        }
                     });
             }
         }
