@@ -72,7 +72,7 @@ const Header: React.FC = () => {
                     </div>
                 </nav>
             </header>
-            <div className="position-fixed top-2 end-0 p-2" style={{zIndex: 200}}>
+            <div className="position-fixed top-2 end-0 p-2" style={{zIndex: 1000}}>
                 <ToastContainer>
                     <Toast show={toast1Visible} autohide={true} onClose={() => setToast1Visible(() => false)} animation={true}>
                         <Toast.Header>

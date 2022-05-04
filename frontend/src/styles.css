@@ -20,14 +20,13 @@
 .calculator-panel {
 	background-color: rgba(255,255,255,0.8);
 	top: 0;
-	z-index: 1;
+	z-index: 999;
 	position: fixed;
 	margin-top: 3.5rem;
 	min-width: 100vw;
-	min-height: 35vh;
-	/*min-height: 100vh;*/
-	/*border-bottom: solid 0.01rem;*/
 	box-shadow: 0 2px 5px #aaaaaa;
+    overflow-y: scroll;
+    max-height: 100vh;
 }
 
 .panel-filler {
@@ -44,6 +43,18 @@
 	position: relative;
 }
 
+#exactbtn {
+    width: 20%;
+}
+
+#exactexpression {
+    width: 80%;
+}
+
+#formula {
+    width: "80%" !important;
+}
+
 @media (min-width: 768px) {
 	.bd-placeholder-img-lg {
 		font-size: 3.5rem;
@@ -51,17 +62,6 @@
 }
 
 @media (max-width: 600px) {
-	input[type="text"] {
-		width: 70%;
-		font-size: 0.8rem;
-		margin-left: 8%;
-	}
-
-	input[type="button"] {
-		width: 10%;
-		font-size: 0.8rem;
-	}
-
 	p {
 		margin-left: 8%;
 		font-size: 0.8rem;
@@ -77,22 +77,31 @@
 		font-size: 0.75rem;
 	}
 
-	input[type="text"] {
-		width: 60%;
-		font-size: 0.75rem;
-		margin-left: 10%;
-	}
+    #formula {
+        margin-left: 10% !important;
+    }
 
-	input[type="button"] {
-		width: 10%;
-		font-size: 0.75rem;
-	}
+    #subbtn {
+       display: none;
+    }
+
+    #exactbtn {
+        display: none;
+    }
+
+    #exactexpression {
+        margin-left: 10% !important;
+    }
 }
 
 @media (max-width: 300px) {
 	p {
 		font-size: 0.5rem;
 	}
+
+    .text-muted {
+        display: none;
+    }
 
 	.h11 {
 		font-size: 0.8rem;
@@ -101,6 +110,14 @@
 	.p11 {
 		display: none;
 	}
+
+    .strong_ml {
+        display: none;
+    }
+
+    .panel-filler {
+        height: 25vh;
+    }
 }
 
 #exactresult .math-multiline {

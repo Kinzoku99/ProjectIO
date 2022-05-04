@@ -223,7 +223,7 @@ const ExactIntCalculator: React.FC = () => {
 				
 				<div className="calculator-panel">
 					{/* To jest sekcja nagłówka naszej strony czyli o czym to jest */}
-					<section className="container text-center py-5">
+					<section className="container text-center pt-5 pb-xs-5">
 						<div className="row py-lg-5">
 							<div className="col-lg-6 col-md-8 mx-auto">
 								<h1 className="fw-light h11">Kalkulator wielomianowy</h1>
@@ -241,13 +241,13 @@ const ExactIntCalculator: React.FC = () => {
 								<p className="text-muted">
 									Wpisz wielomian w postaci ogólnej {iEQ("a_nx^n + \\ldots + a_1x + a_0")}:
 								</p>
-                                <form className="row">
+                                <div className="row">
                                     <input
                                         type="text"
                                         className={"form-control" + inputValid}
                                         name="exactexpression"
                                         id="exactexpression"
-                                        style={{width: "80%"}}
+                                        onKeyUpCapture={(e) => {if(e.key === 'Enter') {handleClick();}}}
                                         onChange={(e) => {setInput(e.target.value)}}
                                     />
                                     <input
@@ -256,10 +256,9 @@ const ExactIntCalculator: React.FC = () => {
                                         value="Policz"
                                         name="exactbtn"
                                         id="exactbtn"
-                                        style={{width: "20%"}}
                                         onClick={handleClick}
                                     />
-                                </form>
+                                </div>
                                 <div id="exactresult" className="my-5">
                                     {EQ(result)}
                                 </div>
