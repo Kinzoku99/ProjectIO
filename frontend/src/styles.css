@@ -14,7 +14,7 @@
 
 .navbar {
 	min-height: 3.5rem;
-	z-index: 2;
+	z-index: 9999;
 }
 
 .calculator-panel {
