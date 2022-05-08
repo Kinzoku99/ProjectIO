@@ -3,12 +3,10 @@ import Gallery from "./Gallery";
 import {useForm} from "react-hook-form";
 import {CalculatorSettings} from "../calculatorSettings";
 import currentURL from "../URLconfig";
-import {iEQ} from "../mathOutputFunctions";
 import BigGraph from "./graphs/BigGraph";
 
 type FormData = {
     formula: string,
-    initial_value: number,
     beg: number,
     end: number
 }
@@ -16,7 +14,6 @@ type FormData = {
 const AntiderivativeGraphsCalculator: React.FC = () => {
     const {register, handleSubmit} = useForm<FormData>({
         defaultValues: {
-            initial_value: CalculatorSettings.initial_value,
             beg: CalculatorSettings.beg_x,
             end: CalculatorSettings.end_x
         }
@@ -24,41 +21,40 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
 
     let [result, setResult] = useState<JSX.Element>(<div/>);
     let [formulaValid, setFormulaValid] = useState<string>("");
-    let [initialValueValid, setInitialValueValid] = useState<string>("");
     let [begValid, setBegValid] = useState<string>("");
     let [endValid, setEndValid] = useState<string>("");
 
     const onSubmit = handleSubmit((formData) => {
         const isFormulaValid = Object.entries(formData.formula).length !== 0;
-        const isInitialValueValid = !isNaN(formData.initial_value);
         const isBegValid = !isNaN(formData.beg);
         const isEndValid = !isNaN(formData.end);
 
         setFormulaValid(isFormulaValid ? ' is-valid' : ' is-invalid');
-        setInitialValueValid(isInitialValueValid ? ' is-valid' : ' is-invalid');
         setBegValid(isBegValid ? ' is-valid' : ' is-invalid');
         setEndValid(isEndValid ? ' is-valid' : ' is-invalid');
 
         console.log(formData)
 
-        if (isFormulaValid && isInitialValueValid && isBegValid && isEndValid) {
+        if (isFormulaValid && isBegValid && isEndValid) {
             const valuesRequest1 = {
-                function: formData.formula,
-                initial_value: formData.initial_value,
+                function_expression: formData.formula,
+                variable_name: CalculatorSettings.variable_name,
                 step_size: CalculatorSettings.step_size,
+                num_of_divisions: CalculatorSettings.num_of_divisions,
+                tol: CalculatorSettings.tol,
                 begin_of_integrating_interval: formData.beg,
                 end_of_integrating_interval: formData.end,
                 rank_of_solver: CalculatorSettings.rank_of_solver
             }
 
             const valuesRequest2 = {
-                function: formData.formula,
+                function_expression: formData.formula,
                 beg_x: formData.beg,
                 end_x: formData.end,
                 step_size: CalculatorSettings.step_size
             }
 
-            fetch(currentURL + 'calculator/des_runge_kutta/', {
+            fetch(currentURL + 'calculator/des_runge_kutta/2/', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {'Content-Type': 'application/json'},
@@ -156,17 +152,7 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
                                         <label htmlFor="formula">Wzór</label>
                                     </div>
                                     <div className="mt-2 row gx-md-1">
-                                        <div className="form-floating mb-1 col-sm-12 col-md-4">
-                                            <input
-                                                type="text"
-                                                className={"form-control" + initialValueValid}
-                                                id="initialValue"
-                                                placeholder="initialValue"
-                                                {...register("initial_value")}
-                                            />
-                                            <label htmlFor="initialValue">Stała {iEQ("(+C)")}</label>
-                                        </div>
-                                        <div className="form-floating mb-1 col-sm-12 col-md-4">
+                                        <div className="form-floating mb-1 col-sm-12 col-md-6">
                                             <input
                                                 type="text"
                                                 className={"form-control" + begValid}
@@ -176,7 +162,7 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
                                             />
                                             <label htmlFor="beg">Początek zakresu</label>
                                         </div>
-                                        <div className="form-floating mb-1 col-sm-12 col-md-4">
+                                        <div className="form-floating mb-1 col-sm-12 col-md-6">
                                             <input
                                                 type="text"
                                                 className={"form-control" + endValid}
@@ -194,8 +180,6 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
                                         style={{width: "50%", marginRight: "25%", marginLeft: "25%"}}
                                     >Policz</button>
                                 </form>
-
-
                             </div>
                         </div>
                         <div id="exactresult" className="my-5">

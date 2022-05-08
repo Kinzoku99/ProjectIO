@@ -5,35 +5,87 @@ from math import sin, cos, tan
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from calculate_graph import calculate_graph
 
-import numIntTrapezoidQ
-import numDESolvers
+import NumIntTrapezoid
+import NumODERungeKutta
 
 @api_view(['POST'])
-def trapezoid_quadrature_01(request):
+def integrate_trapezoid(request):
     try:
-        result = numIntTrapezoidQ.trapezoid_quadrature_01(request.data["function"], float(request.data["step_size"]))
+        result = NumIntTrapezoid.integrate_trapezoid(
+            request.data['function_expression'],
+            request.data['variable_name'],
+            float(request.data['interval_begin']),
+            float(request.data['interval_end']),
+            float(request.data['step_size'])
+        )
         return Response({'result': result})
     except Exception:
         return Response(status=HTTP_400_BAD_REQUEST, data={})
 
 @api_view(['POST'])
-def romberg_quadrature_01(request):
+def integrate_romberg(request):
     try:
-        result = numIntTrapezoidQ.romberg_quadrature_01(request.data["function"], int(request.data["num_of_divisions"]), float(request.data["tol"]))
+        if int(request.data['num_of_divisions']) < 0: raise Exception
+        result = NumIntTrapezoid.integrate_romberg(
+            request.data['function_expression'],
+            request.data['variable_name'],
+            float(request.data['interval_begin']),
+            float(request.data['interval_end']),
+            int(request.data['num_of_divisions']),
+            float(request.data['tol'])
+        )
         return Response({'result': result})
     except Exception:
         return Response(status=HTTP_400_BAD_REQUEST, data={})
 
 @api_view(['POST'])
-def des_runge_kutta(request):
+def des_runge_kutta1(request):
     try:
-        result = numDESolvers.des_runge_kutta(
-            request.data["function"],
-            float(request.data["initial_value"]),
-            float(request.data["step_size"]),
-            float(request.data["begin_of_integrating_interval"]),
-            float(request.data["end_of_integrating_interval"]),
-            int(request.data["rank_of_solver"])
+        if int(request.data['rank_of_solver']) < 0: raise Exception
+        result = NumODERungeKutta.des_runge_kutta(
+            request.data['function_expression'],
+            request.data['variable_name'],
+            float(request.data['initial_value']),
+            float(request.data['step_size']),
+            float(request.data['begin_of_integrating_interval']),
+            float(request.data['end_of_integrating_interval']),
+            int(request.data['rank_of_solver'])
+        )
+
+        x_values = []
+        y_values = []
+
+        for val in result:
+            x_values.append(val[0])
+            y_values.append(val[1])
+
+        return Response({'x_values': x_values, 'y_values': y_values})
+    except Exception:
+        return Response(status=HTTP_400_BAD_REQUEST, data={})
+
+@api_view(['POST'])
+def des_runge_kutta2(request):
+    try:
+        if int(request.data['rank_of_solver']) < 0: raise Exception
+        if int(request.data['num_of_divisions']) < 0: raise Exception
+
+        initial_value = NumIntTrapezoid.integrate_romberg(
+            request.data['function_expression'],
+            request.data['variable_name'],
+            0,
+            float(request.data['begin_of_integrating_interval']),
+            int(request.data['num_of_divisions']),
+            float(request.data['tol'])
+        )
+
+        result = NumODERungeKutta.des_runge_kutta(
+            request.data['function_expression'],
+            request.data['variable_name'],
+            initial_value,
+            float(request.data['step_size']),
+            float(request.data['begin_of_integrating_interval']),
+            float(request.data['end_of_integrating_interval']),
+            int(request.data['rank_of_solver'])
         )
 
         x_values = []
@@ -49,10 +101,10 @@ def des_runge_kutta(request):
 
 @api_view(['POST'])
 def graph(request):
-    function = request.data["function"]
-    beg_x = float(request.data["beg_x"])
-    end_x = float(request.data["end_x"])
-    step = float(request.data["step_size"])
+    function = request.data['function_expression']
+    beg_x = float(request.data['beg_x'])
+    end_x = float(request.data['end_x'])
+    step = float(request.data['step_size'])
 
     result = calculate_graph(function, beg_x, end_x, step)
 
