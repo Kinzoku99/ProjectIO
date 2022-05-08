@@ -2,12 +2,15 @@
 
 #### VScode ####
 .vscode/
-#### CMake ####
-backend/Makefile
-backend/CMakeCache.txt
-backend/CMakeFiles/*
-backend/cmake_install.cmake
 
+#### Podstawowe pliki CMake ####
+CMakeCache*
+MakeFile
+CTestTestfile*
+CMakeFiles
+cmake*
+DartConfiguration.tcl
+Testing/
 
 #### Testy ####
 backend/tests/outputs/*

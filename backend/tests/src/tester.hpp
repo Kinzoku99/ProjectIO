@@ -8,8 +8,10 @@
 #include <string>
 #include <algorithm>
 
-// Definicja "real_function"
-#include "../../src/conventions.hpp"
+#include <main_definitions.hpp>
+#include <num.DESolvers.hpp>
+#include <num.Integrals.hpp>
+
 
 /** @brief Assert z wypisaniem wiadomości na STDERR */
 #define assert_printf(expr, fmtStr, ...)    \
@@ -17,24 +19,11 @@
          ; __assert_fail(#expr, __FILE__, __LINE__, __ASSERT_FUNCTION))\
         fprintf(stderr, fmtStr, __VA_ARGS__)
 
-
-/**
- * @brief Makro tworzące obiekt testowy.
- * Wykorzytsujemy możliwość castowania capture-less wyrażeń lambda na 
- * wskaźniki do funkcji lub do obiektu typu std::function<double(double)>
- */
-#define MAKE_TEST(input, result)        \
-    {                                   \
-        #input,                         \
-        #result,                        \
-        [](double x){return (input);},  \
-        [](double x){return (result);}  \
-    }
-
 /**
  * @brief Klasa pojdeynczego testu.
  * 
- * Zawiera dwie funkcje:
+ * Zawiera nazwy dwóch funkcji oraz nazwę zmiennej jaka występuje w tych
+ * funkcjach
  * @param input funkcja wejściowa double -> double, integrowana
  * @param result funkcja wyjściowa double -> double, pierwotna
  * Oraz ich opisy słowne, najczęście używane wraz z makrem @ref MAKE_TEST
@@ -42,19 +31,18 @@
 class Testing_unit {
     public:
     // Testy są niezmienialne, po utworzeniu
-    const real_function input, result;
     const std::string input_name, result_name;
+    const std::string variable_name;
+    
 
     Testing_unit(
         const std::string &name_i,
         const std::string &name_r,
-        const real_function &in,
-        const real_function &r
+        const std::string &var_name
     )
-      : input(in),
-        result(r),
-        input_name(name_i),
-        result_name(name_r)
+      : input_name(name_i),
+        result_name(name_r),
+        variable_name(var_name)
     {}
 };
 /**
@@ -138,7 +126,12 @@ public:
     }
 };
 
-
+/**
+ * @brief Makro tworzące obiekt testowy.
+ * Wykorzytsujemy możliwość castowania capture-less wyrażeń lambda na 
+ * wskaźniki do funkcji lub do obiektu typu std::function<double(double)>
+ */
+#define MAKE_TEST(input, result, variable) Testing_unit(#input, #result, #variable)
 
 
 

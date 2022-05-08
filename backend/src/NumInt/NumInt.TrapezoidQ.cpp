@@ -5,7 +5,9 @@
 #include <cstdio>
 #include <cassert>
 
-#include "conventions.hpp"
+// #include <pybind11/pybind11.h>
+//
+// namespace py = pybind11;
 
 /* Metoda Romberga oferuje zbieżność rzędu
  * O( h^(2 + 2*MAX_ROMBERG_STEPS) )
@@ -17,8 +19,32 @@
 #endif
 
 
+
+double integrate_trapezoid(const std::string &func_expr, const std::string &var_name, double b, double e, double h){
+    expr_t expression;
+    double variable;
+
+    initialize_expression(func_expr, var_name, expression, variable);
+    
+    real_function handler = get_handler(b, e, expression, variable);
+
+    return trapezoid_quadrature_01(handler, h / fabs(e - b));
+}
+
+double integrate_romberg(const std::string &func_expr, const std::string &var_name, double b, double e, size_t num_of_divisions, double tol){
+    expr_t expression;
+    double variable;
+
+    initialize_expression(func_expr, var_name, expression, variable);
+    
+    real_function handler = get_handler(b, e, expression, variable);
+
+    return romberg_quadrature_01(handler, num_of_divisions, tol);
+}
+
+
 double trapezoid_quadrature_01(
-  real_function function,   /**< Funkcja przyjmująca i przekazująca
+  const real_function &function,   /**< Funkcja przyjmująca i przekazująca
                                  parametr typu double.               */
   double h                  ///< Długość pojedynczego podziału
 ){
@@ -28,6 +54,8 @@ double trapezoid_quadrature_01(
     evaluation += function(0) / 2.0;
     x += h;
     while (x < 1.0){
+        // evaluation += function(x) / 2.0;
+        // evaluation += function(x) / 2.0;
         evaluation += function(x);
         x += h;
     }
@@ -44,7 +72,7 @@ double trapezoid_quadrature_01(
  *        dla złożonej kwadratury trapezów
  */
 double romberg_quadrature_01(
-  real_function function,   /**< Funkcja przyjmująca i przekazująca
+  const real_function &function,   /**< Funkcja przyjmująca i przekazująca
                                  parametr typu double.               */
   size_t num_of_divisions,  ///< Liczba wstępnych podziałów do wykonania
   double tol                ///< Oczekiwana tolerancja końcowa
@@ -127,3 +155,12 @@ double romberg_quadrature_01(
     // najelpszego przybliżenia
     return romberg_evals[MAX_ROMBERG_STEPS - 1];
 }
+
+
+// Zakomentowane
+
+// PYBIND11_MODULE(NumIntTrapezoid, handle){
+//     handle.doc() = "";
+//     handle.def("integrate_trapezoid", &integrate_trapezoid);
+//     handle.def("integrate_romberg", &integrate_romberg);
+// }

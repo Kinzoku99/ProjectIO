@@ -4,7 +4,9 @@
 # plik wykonywalny w folderze backend/tests/ o takiej samej nazwie jak
 # plik źródłowy (bez rozszerzenia) odpowiednio go kompilując.
 
-cmake_minimum_required(VERSION 3.21)
+
+cmake_minimum_required(VERSION 3.18)
+
 project(ProjectIO)
 
 # Testowanie przy pomocy make test lub ctest
@@ -36,16 +38,19 @@ set(BoldCyan    "${Esc}[1;36m")
 set(BoldWhite   "${Esc}[1;37m")
 
 # Informacja o użyciu std::function vs wskaźnik na funkcję
-if (NOT USE_FUNC_PTR)
-    message("\n\tKompilowanie z użyciem${Green} std::function${ColorReset}"
-            "\n\tzamiast ${Red}wskaźników na funkcje${ColorReset}.\n\n"
-            "\tW celu zmiany, należy wywołać CMake z poleceniem ${Red}-DUSE_FUNC_PTR=1${ColorReset}\n")
-else (NOT USE_FUNC_PTR)
-    add_compile_definitions(USE_FUNC_PTR=1)
-    message("\n\tKompilowanie z użyciem${Green} wskaźników na funkcje${ColorReset}"
-            "\n\tzamiast ${Red}std::function${ColorReset}.\n\n"
-            "\tW celu zmiany, należy wywołać CMake z poleceniem ${Red}-DUSE_FUNC_PTR=0${ColorReset}\n")
-endif (NOT USE_FUNC_PTR)
+# Nie wspierane od momentu dołączenia pybind11
+# if (NOT USE_FUNC_PTR)
+#     message("\n\tKompilowanie z użyciem${Green} std::function${ColorReset}"
+#             "\n\tzamiast ${Red}wskaźników na funkcje${ColorReset}.\n\n"
+#             "\tW celu zmiany, należy wywołać CMake z poleceniem ${Red}-DUSE_FUNC_PTR=1${ColorReset}\n")
+
+# else (NOT USE_FUNC_PTR)
+#     add_compile_definitions(USE_FUNC_PTR=1)
+#     message("\n\tKompilowanie z użyciem${Green} wskaźników na funkcje${ColorReset}"
+#             "\n\tzamiast ${Red}std::function${ColorReset}.\n\n"
+#             "\tW celu zmiany, należy wywołać CMake z poleceniem ${Red}-DUSE_FUNC_PTR=0${ColorReset}\n")
+            
+# endif (NOT USE_FUNC_PTR)
 
 # Czy widzieć polecenie wywoływane przez make
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -57,38 +62,18 @@ set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -Og")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tests)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY tests/libraries)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY tests/libraries)
-set(CMAKE_TESTS_OUTPUT_DIRECTORY tests/outputs)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/libraries)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/libraries)
+set(CMAKE_TESTS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/outputs)
+add_compile_definitions(__TESTS_OUTPUT_DIRECTORY__="${CMAKE_TESTS_OUTPUT_DIRECTORY}")
+
 add_custom_target(clean_outputs ALL rm -f ${CMAKE_TESTS_OUTPUT_DIRECTORY}/*
                   COMMENT "Usuwanie danych wyjściowych testów")
 
-file (GLOB SOURCE_FILES CONFIGURE_DEPENDS
-    "src/*.hpp"
-    "src/*.cpp"
-)
-    
-file (GLOB TESTER_HEADER CONFIGURE_DEPENDS
-    "tests/src/tester.hpp"
-)
-    
-file(GLOB TEST_FILES CONFIGURE_DEPENDS
-    "tests/src/*.cpp"
-)
-    
-add_library(testing_lib ${SOURCE_FILES} ${TESTER_HEADER})
 
-
-foreach(testsourcefile ${TEST_FILES})
-    string(REGEX REPLACE ".*/" "" testname1 ${testsourcefile})
-    string(REPLACE ".cpp" "" testname ${testname1})
-
-    message(STATUS "Tworzenie testu: " ${testname})
-    add_executable(${testname} ${testsourcefile})
-    target_link_libraries(${testname} testing_lib)
-    add_test(NAME ${testname} COMMAND ${testname})    
-endforeach(testsourcefile ${TEST_FILES})
+add_subdirectory("src")
+add_subdirectory("tests")
 
 # TODO Doxygen
 # # Szuakmy Doxygena i tworzymy make doc, do stworzenia dokumentacji
