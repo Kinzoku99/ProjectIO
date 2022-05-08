@@ -1,0 +1,211 @@
+import React, {useState} from "react";
+import Gallery from "./Gallery";
+import {useForm} from "react-hook-form";
+import {CalculatorSettings} from "../calculatorSettings";
+import currentURL from "../URLconfig";
+import {iEQ} from "../mathOutputFunctions";
+import BigGraph from "./graphs/BigGraph";
+
+type FormData = {
+    formula: string,
+    initial_value: number,
+    beg: number,
+    end: number
+}
+
+const AntiderivativeGraphsCalculator: React.FC = () => {
+    const {register, handleSubmit} = useForm<FormData>({
+        defaultValues: {
+            initial_value: CalculatorSettings.initial_value,
+            beg: CalculatorSettings.beg_x,
+            end: CalculatorSettings.end_x
+        }
+    });
+
+    let [result, setResult] = useState<JSX.Element>(<div/>);
+    let [formulaValid, setFormulaValid] = useState<string>("");
+    let [initialValueValid, setInitialValueValid] = useState<string>("");
+    let [begValid, setBegValid] = useState<string>("");
+    let [endValid, setEndValid] = useState<string>("");
+
+    const onSubmit = handleSubmit((formData) => {
+        const isFormulaValid = Object.entries(formData.formula).length !== 0;
+        const isInitialValueValid = !isNaN(formData.initial_value);
+        const isBegValid = !isNaN(formData.beg);
+        const isEndValid = !isNaN(formData.end);
+
+        setFormulaValid(isFormulaValid ? ' is-valid' : ' is-invalid');
+        setInitialValueValid(isInitialValueValid ? ' is-valid' : ' is-invalid');
+        setBegValid(isBegValid ? ' is-valid' : ' is-invalid');
+        setEndValid(isEndValid ? ' is-valid' : ' is-invalid');
+
+        console.log(formData)
+
+        if (isFormulaValid && isInitialValueValid && isBegValid && isEndValid) {
+            const valuesRequest1 = {
+                function: formData.formula,
+                initial_value: formData.initial_value,
+                step_size: CalculatorSettings.step_size,
+                begin_of_integrating_interval: formData.beg,
+                end_of_integrating_interval: formData.end,
+                rank_of_solver: CalculatorSettings.rank_of_solver
+            }
+
+            const valuesRequest2 = {
+                function: formData.formula,
+                beg_x: formData.beg,
+                end_x: formData.end,
+                step_size: CalculatorSettings.step_size
+            }
+
+            fetch(currentURL + 'calculator/des_runge_kutta/', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(valuesRequest1)
+            }).then((response) => {
+                if (response.status === 400) {
+                    setFormulaValid(' is-invalid');
+                    setResult(<div/>);
+                    return null;
+                }
+                else {
+                    return response.json();
+                }
+            })
+                .then((data) => {
+                    if (data !== null) {
+                        fetch(currentURL + 'calculator/graph/', {
+                            method: 'POST',
+                            mode: 'cors',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(valuesRequest2)
+                        }).then((response) => {
+                            if (response.status === 500) {
+                                setResult(<div/>);
+                                setResult(
+                                    <BigGraph x={data.x_values} y={data.y_values} x_func={[]} y_func={[]}/>
+                                );
+                                return null;
+                            } else {
+                                return response.json();
+                            }
+                        })
+                            .then((data2) => {
+                                if (data2 !== null) {
+                                    setResult(<div/>)
+                                    setResult(
+                                        <BigGraph x={data.x_values} y={data.y_values} x_func={data2.x_values}
+                                                  y_func={data2.y_values}/>
+                                    )
+                                }
+                            })
+                    }
+                })
+
+        }
+    })
+
+    const convertRemToPixels = (rem : number) => rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+    document.addEventListener("scroll", function () {
+        const calcPanel = document.querySelector<HTMLElement>(".calculator-panel");
+        if (calcPanel !== null) {
+            const navbarHeight = convertRemToPixels(3.5);
+            const distanceFromTop = Math.abs( document.body.getBoundingClientRect().top);
+            if (navbarHeight >= distanceFromTop)
+                calcPanel.style.marginTop = (navbarHeight - distanceFromTop).toString(10) + "px";
+            else
+                calcPanel.style.marginTop = "0px";
+        }
+    });
+
+    return (
+        <main>
+            <div className="panel-filler" style={{height: "42vh"}}/>
+
+            <div className="main-content">
+                <Gallery />
+
+                <div className="calculator-panel" style={{zIndex: 100}}>
+                    {/* To jest sekcja nagłówka naszej strony czyli o czym to jest */}
+                    <section className="container text-center py-5">
+                        <div className="row py-lg-5">
+                            <div className="col-lg-6 col-md-8 mx-auto">
+                                <h1 className="fw-light h11">Graficzny kalkulator funkcji pierwotnych</h1>
+
+                                <p className="lead text-muted p11">
+                                    Ten kalkulator rysuje wykres funkcji pierwotnej.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="container">
+                        <div className="row">
+                            <div className="col-lg-6 col-md-8 mx-auto">
+                                <form noValidate={true} onSubmit={onSubmit}>
+                                    <div className="form-floating mb-1">
+                                        <input
+                                            type="text"
+                                            className={"form-control" + formulaValid}
+                                            id="formula"
+                                            placeholder="formula"
+                                            {...register("formula")}
+                                        />
+                                        <label htmlFor="formula">Wzór</label>
+                                    </div>
+                                    <div className="mt-2 row gx-md-1">
+                                        <div className="form-floating mb-1 col-sm-12 col-md-4">
+                                            <input
+                                                type="text"
+                                                className={"form-control" + initialValueValid}
+                                                id="initialValue"
+                                                placeholder="initialValue"
+                                                {...register("initial_value")}
+                                            />
+                                            <label htmlFor="initialValue">Stała {iEQ("(+C)")}</label>
+                                        </div>
+                                        <div className="form-floating mb-1 col-sm-12 col-md-4">
+                                            <input
+                                                type="text"
+                                                className={"form-control" + begValid}
+                                                id="beg"
+                                                placeholder="beg"
+                                                {...register("beg")}
+                                            />
+                                            <label htmlFor="beg">Początek zakresu</label>
+                                        </div>
+                                        <div className="form-floating mb-1 col-sm-12 col-md-4">
+                                            <input
+                                                type="text"
+                                                className={"form-control" + endValid}
+                                                id="end"
+                                                placeholder="end"
+                                                {...register("end")}
+                                            />
+                                            <label htmlFor="end">Koniec zakresu</label>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-outline-secondary mt-3 btn-calc-form"
+                                        id="subbtn"
+                                        style={{width: "50%", marginRight: "25%", marginLeft: "25%"}}
+                                    >Policz</button>
+                                </form>
+
+
+                            </div>
+                        </div>
+                        <div id="exactresult" className="my-5">
+                        {result}
+                    </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    );
+}
+
+export default AntiderivativeGraphsCalculator;

@@ -12,4 +12,47 @@ cmake*
 DartConfiguration.tcl
 Testing/
 
-!CMakeLists.txt
+#### Testy ####
+backend/tests/outputs/*
+backend/tests/libraries/*
+
+#### API ####
+api/.idea
+**/__pycache__
+api/env
+
+#### Frontend ####
+# dependencies
+frontend/node_modules
+frontend/.idea
+frontend/.pnp
+frontend/.pnp.js
+
+# testing
+frontend/coverage
+
+# production
+frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+#### pybind ####
+pybind/build
+pybind/.idea
+pybind/cmake-build-debug
+
+#### backend ####
+backend/CTestTestfile.cmake
+backend/DartConfiguration.tcl
+backend/Testing/
+backend/.idea
+backend/cmake-build-debug

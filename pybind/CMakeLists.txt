@@ -24,5 +24,4 @@ message(STATUS ${MAIN_HEADER_FILES})
 add_subdirectory(pybind11)
 
 pybind11_add_module(NumIntTrapezoid ${NUM_INT_TRAPEZOID_MODULE_FILES} ${MAIN_HEADER_FILES})
-
 pybind11_add_module(NumODERungeKutta ${NUM_ODE_RUNGEKUTTA_MODULE_FILES} ${MAIN_HEADER_FILES})
