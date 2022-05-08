@@ -28,18 +28,24 @@ const IntValueCalculator: React.FC = () => {
         }
         else {
             const valuesRequest1 = {
-                function: formData.formula,
+                function_expression: formData.formula,
+                variable_name: CalculatorSettings.variable_name,
+                interval_begin: CalculatorSettings.interval_begin,
+                interval_end: CalculatorSettings.interval_end,
                 step_size: CalculatorSettings.step_size
             }
 
             const valuesRequest2 = {
-                function: formData.formula,
+                function_expression: formData.formula,
+                variable_name: CalculatorSettings.variable_name,
+                interval_begin: CalculatorSettings.interval_begin,
+                interval_end: CalculatorSettings.interval_end,
                 num_of_divisions: CalculatorSettings.num_of_divisions,
                 tol: CalculatorSettings.tol
             }
 
             if (formData.methodRadio === "trapezoid") {
-                fetch(currentURL + 'calculator/trapezoid_quadrature_01/', {
+                fetch(currentURL + 'calculator/integrate_trapezoid/', {
                     method: 'POST',
                     mode: 'cors',
                     headers: {'Content-Type': 'application/json'},
@@ -60,7 +66,7 @@ const IntValueCalculator: React.FC = () => {
                     });
             }
             else {
-                fetch(currentURL + 'calculator/romberg_quadrature_01/', {
+                fetch(currentURL + 'calculator/integrate_romberg/', {
                     method: 'POST',
                     mode: 'cors',
                     headers: {'Content-Type': 'application/json'},

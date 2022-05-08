@@ -179,7 +179,7 @@ solver_out_t des_runge_kutta(const std::string &func_expr, const std::string &va
     return points;
 }
 
-// PYBIND11_MODULE(NumODERungeKutta, handle) {
-//     handle.doc() = "";
-//     handle.def("des_runge_kutta", &des_runge_kutta);
-// }
+PYBIND11_MODULE(NumODERungeKutta, handle) {
+     handle.doc() = "";
+     handle.def("des_runge_kutta", &des_runge_kutta);
+}

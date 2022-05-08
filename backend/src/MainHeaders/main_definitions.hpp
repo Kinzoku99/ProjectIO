@@ -12,7 +12,9 @@
 
 #include <functional>
 #include <cmath>
-#include <exprtk.hpp>
+#include "exprtk.hpp"
+#include "../../../pybind/pybind11/include/pybind11/pybind11.h"
+#include "../../../pybind/pybind11/include/pybind11/stl.h"
 
 using real_function = std::function<double(double)>;
 
