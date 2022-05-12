@@ -23,7 +23,7 @@ const Gallery: React.FC = () => {
     }} className="mt-3"/>, '')));
 
     useEffect(() => {
-        fetch(currentURL + 'gallery/', {
+        fetch(currentURL + 'gallery/random/12', {
             method: 'GET',
             mode: 'cors',
             headers: {'Content-Type': 'application/json'},
