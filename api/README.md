@@ -80,7 +80,8 @@
   
     Zwraca:
     * `elements: object[]` - tablica obiektów przechowujących rekordy galerii; obiekty są postaci:
-      * `function_expression: string` - napis zawierający definicję funkcji
-      * `tex: string` - napis zawierający kod w texu przedstawiający definicję funkcji
+      * `id: int` - unikalne id elementu
+      * `tex_string: string` - napis zawierający kod w texu przedstawiający definicję funkcji
+      * `variable_name: string` - napis zawierający nazwę zmiennej
       * `x_values: float[]` - tablica argumentów funkcji
       * `y_values: float[]` - tablica wartości funkcji
