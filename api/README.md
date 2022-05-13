@@ -61,6 +61,16 @@
     * `y_values: float[]` - tablica wartości funkcji
 
 
+* **POST** `/api/calculator/indefinite_integration/` - Oblicza wzór całki dokładnej
+
+    Argumenty:
+    * `function_expression: string` - napis zawierający definicję funkcji
+    * `variable_name: string` - napis zawierający nazwę zmiennej
+
+    Zwraca:
+    * `tex_string: string` - wynik 
+
+
 * `[temp]` **POST** `/api/calculator/graph/` - Rysowanie wykresów funkcji.
 
     Argumenty:

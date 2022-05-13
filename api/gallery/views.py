@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
@@ -9,7 +8,7 @@ from .serializers import GalleryEntrySerializer
 import NumIntTrapezoid
 import NumODERungeKutta
 
-from default_calculator_params import calculator_params
+from calculator_functions.default_calculator_params import calculator_params
 
 import random
 

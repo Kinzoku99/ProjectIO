@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from math import sin, cos, tan
 from rest_framework.status import HTTP_400_BAD_REQUEST
-from calculate_graph import calculate_graph
+from calculator_functions.calculate_graph import calculate_graph
+from calculator_functions.indefinite_integration import parse_and_integrate
 
 import NumIntTrapezoid
 import NumODERungeKutta
@@ -96,6 +95,18 @@ def des_runge_kutta2(request):
             y_values.append(val[1])
 
         return Response({'x_values': x_values, 'y_values': y_values})
+    except Exception:
+        return Response(status=HTTP_400_BAD_REQUEST, data={})
+
+@api_view(['POST'])
+def indefinite_integration(request):
+    try:
+        if 'variable_name' in request.data:
+            return Response({
+                'tex_string': parse_and_integrate(request.data['function_expression'], request.data['variable_name'])
+            })
+        else:
+            return Response({'tex_string': parse_and_integrate(request.data['function_expression'])})
     except Exception:
         return Response(status=HTTP_400_BAD_REQUEST, data={})
 
