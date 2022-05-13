@@ -1,138 +1,187 @@
-.strong_ml {
-	font-weight:	bold;
-	font-size:		1.5rem;
-	margin-left:	8px;
+import React, {useState} from "react";
+import Gallery from "./Gallery";
+import {EQ} from "../mathOutputFunctions";
+import {CalculatorSettings} from "../calculatorSettings";
+import currentURL from "../URLconfig";
+import {useForm} from "react-hook-form";
+
+type FormData = {
+    formula: string,
+    methodRadio: any
 }
 
-.bd-placeholder-img {
-	font-size: 				1.125rem;
-	text-anchor: 			middle;
-	-webkit-user-select: 	none;
-	-moz-user-select: 		none;
-	user-select: 			none;
+const PRECISION = 8;
+
+const roundFloat = (number: number): string => {
+    let factor = Math.pow(10, PRECISION);
+    return (Math.round(number * factor) / factor).toString();
 }
 
-.navbar {
-	min-height: 3.5rem;
-	z-index: 9999;
+const IntValueCalculator: React.FC = () => {
+    const {register, handleSubmit} = useForm<FormData>();
+    let [result, setResult] = useState<string>("");
+    let [inputValid, setInputValid] = useState<string>("");
+
+    const onSubmit = handleSubmit((formData) => {
+        if (Object.entries(formData.formula).length === 0) {
+            setInputValid(' is-invalid');
+        }
+        else {
+            const valuesRequest1 = {
+                function_expression: formData.formula,
+                variable_name: CalculatorSettings.variable_name,
+                interval_begin: CalculatorSettings.interval_begin,
+                interval_end: CalculatorSettings.interval_end,
+                step_size: CalculatorSettings.step_size
+            }
+
+            const valuesRequest2 = {
+                function_expression: formData.formula,
+                variable_name: CalculatorSettings.variable_name,
+                interval_begin: CalculatorSettings.interval_begin,
+                interval_end: CalculatorSettings.interval_end,
+                num_of_divisions: CalculatorSettings.num_of_divisions,
+                tol: CalculatorSettings.tol
+            }
+
+            if (formData.methodRadio === "trapezoid") {
+                fetch(currentURL + 'calculator/integrate_trapezoid/', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(valuesRequest1)
+                }).then((response) => {
+                    if (response.status === 400) {
+                        setInputValid(" is-invalid");
+                        setResult("");
+                        return null;
+                    }
+                    return response.json();
+                })
+                    .then((data) => {
+                        if (data !== null) {
+                            setResult("\\int_0^1 dx\\: \\: " + formData.formula + " = " + roundFloat(data.result));
+                            setInputValid("");
+                        }
+                    });
+            }
+            else {
+                fetch(currentURL + 'calculator/integrate_romberg/', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(valuesRequest2)
+                }).then((response) => {
+                    if (response.status === 400) {
+                        setInputValid(" is-invalid");
+                        setResult("");
+                        return null;
+                    }
+                    return response.json();
+                    })
+                    .then((data) => {
+                        if (data !== null) {
+                            setResult("\\int_0^1 dx\\: \\: " + formData.formula + " = " + roundFloat(data.result));
+                            setInputValid("");
+                        }
+                    });
+            }
+        }
+    })
+
+    const convertRemToPixels = (rem : number) => rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+    document.addEventListener("scroll", function () {
+        const calcPanel = document.querySelector<HTMLElement>(".calculator-panel");
+        if (calcPanel !== null) {
+            const navbarHeight = convertRemToPixels(3.5);
+            const distanceFromTop = Math.abs( document.body.getBoundingClientRect().top);
+            if (navbarHeight >= distanceFromTop)
+                calcPanel.style.marginTop = (navbarHeight - distanceFromTop).toString(10) + "px";
+            else
+                calcPanel.style.marginTop = "0px";
+        }
+    });
+
+    return (
+        <main>
+            <div className="panel-filler"/>
+
+            <div className="main-content">
+                <Gallery />
+
+                <div className="calculator-panel">
+                    {/* To jest sekcja nagłówka naszej strony czyli o czym to jest */}
+                    <section className="container text-center py-5">
+                        <div className="row py-lg-5">
+                            <div className="col-lg-6 col-md-8 mx-auto">
+                                <h1 className="fw-light h11">Kalkulator wartości całki</h1>
+
+                                <p className="lead text-muted p11">
+                                    Ten kalkulator wykonuje całkowanie numeryczne.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="container">
+                        <div className="row">
+                            <div className="col-lg-6 col-md-8 mx-auto">
+                                <form noValidate={true} onSubmit={onSubmit}>
+                                    <div className="row">
+                                        <input
+                                            type="text"
+                                            className={"form-control m-0" + inputValid}
+                                            id="formula2"
+                                            style={{width: "80%"}}
+                                            {...register("formula")}
+                                        />
+                                        <button
+                                            type="submit"
+                                            className="btn btn-outline-secondary"
+                                            id="subbtn"
+                                            style={{width: "20%"}}
+                                        >Policz</button>
+                                    </div>
+                                    <div className="mt-3">
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                id="methodRadio1"
+                                                value="trapezoid"
+                                                checked
+                                                {...register("methodRadio")}
+                                            />
+                                            <label className="form-check-label fw-light" htmlFor="flexRadioDefault1">
+                                                Metoda złożonej kwadratury trapezów
+                                            </label>
+                                        </div>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                id="methodRadio2"
+                                                value="romberg"
+                                                {...register("methodRadio")}
+                                            />
+                                            <label className="form-check-label fw-light" htmlFor="flexRadioDefault2">
+                                                Metoda Romberga
+                                            </label>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div id="exactresult" className="my-5">
+                                    {EQ(result)}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    );
 }
 
-.calculator-panel {
-	background-color: rgba(255,255,255,0.8);
-	top: 0;
-	z-index: 999;
-	position: fixed;
-	margin-top: 3.5rem;
-	width: 100vw;
-	box-shadow: 0 2px 5px #aaaaaa;
-    overflow-y: scroll;
-    max-height: 100vh;
-}
-
-.panel-filler {
-	height: 35vh;
-}
-
-.main {
-	position: relative;
-}
-
-#root {
-	background-color: white;
-	min-height: 100vh;
-	position: relative;
-}
-
-#exactbtn {
-    width: 20%;
-}
-
-#exactexpression {
-    width: 80%;
-}
-
-#formula, #formula2 {
-    width: "80%" !important;
-}
-
-@media (min-width: 768px) {
-	.bd-placeholder-img-lg {
-		font-size: 3.5rem;
-	}
-}
-
-@media (max-width: 600px) {
-	p {
-		margin-left: 8%;
-		font-size: 0.8rem;
-	}
-
-	.p11 {
-		margin-left: 0;
-	}
-}
-
-@media (max-width: 484px) {
-	p {
-		font-size: 0.75rem;
-	}
-
-    #formula2 {
-        margin-left: 10% !important;
-    }
-
-    #subbtn {
-       display: none;
-    }
-
-    #exactbtn {
-        display: none;
-    }
-
-    #exactexpression {
-        margin-left: 10% !important;
-    }
-}
-
-@media (max-width: 300px) {
-	p {
-		font-size: 0.5rem;
-	}
-
-    .text-muted {
-        display: none;
-    }
-
-	.h11 {
-		font-size: 0.8rem;
-	}
-
-	.p11 {
-		display: none;
-	}
-
-    .strong_ml {
-        display: none;
-    }
-
-    .panel-filler {
-        height: 25vh;
-    }
-}
-
-#exactresult .math-multiline {
-	overflow-x: auto;
-	overflow-y: hidden;
-	max-height: 6rem;
-	text-overflow: ellipsis;
-	overflow-wrap: unset;
-	white-space: nowrap;
-}
-
-.btn-calc-form {
-	background-color: white !important;
-}
-
-.btn-calc-form:active, .btn-calc-form:hover {
-	background-color: #6c757d !important;
-}
+export default IntValueCalculator;
