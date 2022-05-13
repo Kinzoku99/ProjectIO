@@ -23,7 +23,7 @@
 	z-index: 999;
 	position: fixed;
 	margin-top: 3.5rem;
-	min-width: 100vw;
+	width: 100vw;
 	box-shadow: 0 2px 5px #aaaaaa;
     overflow-y: scroll;
     max-height: 100vh;
