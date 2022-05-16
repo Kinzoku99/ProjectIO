@@ -1,4 +1,3 @@
-from pickle import TRUE
 from sympy import *
 from sympy.parsing.sympy_parser import T
 

@@ -5,12 +5,13 @@
 
 #### Podstawowe pliki CMake ####
 CMakeCache*
-MakeFile
+Makefile
 CTestTestfile*
 CMakeFiles
 cmake*
 DartConfiguration.tcl
 Testing/
+
 
 #### Testy ####
 backend/tests/outputs/*
@@ -68,4 +69,7 @@ backend/src/*
 !backend/src/NumInt/*
 !backend/src/NumODE
 !backend/src/NumODE/*
+!backend/src/IndefInt
+!backend/src/IndefInt/*
+
 

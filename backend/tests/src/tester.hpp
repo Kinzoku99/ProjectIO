@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include <main_definitions.hpp>
+#include <expr_handler.hpp>
 #include <num.DESolvers.hpp>
 #include <num.Integrals.hpp>
 
@@ -63,6 +64,10 @@ public:
         return tests_to_do.at(index);
     }
 
+    size_t size() const {
+        return tests_to_do.size();
+    }
+
     /**
      * Umożliwiamy użycie pętli for each
      */ 
@@ -80,7 +85,7 @@ public:
      * lub na poszczególnym teście.
      * 
      * Użycie, przykład: Ewluacja funkcji całkowanych w punkcie.
-     *  Tester T = {MAKE_TEST(2*x, pow(x,2))};
+     *  Tester T = {Testing_unit("2*x", "x^2", "x")};
      *  my_val = 2;
      *  std::vector<double> eval_input_at_my_val =
      *  T.apply_all_tests(
@@ -133,6 +138,32 @@ public:
  */
 #define MAKE_TEST(input, result, variable) Testing_unit(#input, #result, #variable)
 
+inline void print_integration_test(const char * mehtod_name, const std::string &int_name, double a, double b, double true_res, double calc_res){
+    printf("Całka numeryczna z funkcji:\t%s\nna przedziale (%f, %f) metodą %s \n\tPrawdziwy: %.12f\tObliczony: %.12f\n",
+            int_name.c_str(),
+            a, b,
+            mehtod_name,
+            true_res, calc_res
+        );
+}
+
+inline void print_handler_out(real_function handler, size_t steps){
+    printf("Handler debug print:\n");
+    for (size_t i  = 0 ; i < steps; ++i){
+        printf("\tEval at (%lf) := %lf\n",
+            (double)i / steps,
+            handler((double)i / steps));
+    }
+}
+
+
+#ifdef DEBUG
+    #pragma message ( "DEBUG IS ON" )
+    #define debugf(fmt, ...)    \
+    fprintf(stderr, fmt, ##__VA_ARGS__)
+#else
+    #define debugf(fmt, ...)
+#endif
 
 
 #endif /* TESTER_HEADER */

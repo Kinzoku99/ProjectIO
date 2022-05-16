@@ -4,7 +4,6 @@
 # plik wykonywalny w folderze backend/tests/ o takiej samej nazwie jak
 # plik źródłowy (bez rozszerzenia) odpowiednio go kompilując.
 
-
 cmake_minimum_required(VERSION 3.18)
 
 project(ProjectIO)
@@ -16,6 +15,8 @@ include(CTest)
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "Nie wybrano typu kompilacji, ustawienie domyślne to Release")
     set(CMAKE_BUILD_TYPE "Release")
+else (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Wybrano typ kompilacji: " ${CMAKE_BUILD_TYPE} )
 endif (NOT CMAKE_BUILD_TYPE)
 
 # Dodatkowe kolorowane wyjścia
@@ -37,20 +38,12 @@ set(BoldMagenta "${Esc}[1;35m")
 set(BoldCyan    "${Esc}[1;36m")
 set(BoldWhite   "${Esc}[1;37m")
 
-# Informacja o użyciu std::function vs wskaźnik na funkcję
-# Nie wspierane od momentu dołączenia pybind11
-# if (NOT USE_FUNC_PTR)
-#     message("\n\tKompilowanie z użyciem${Green} std::function${ColorReset}"
-#             "\n\tzamiast ${Red}wskaźników na funkcje${ColorReset}.\n\n"
-#             "\tW celu zmiany, należy wywołać CMake z poleceniem ${Red}-DUSE_FUNC_PTR=1${ColorReset}\n")
 
-# else (NOT USE_FUNC_PTR)
-#     add_compile_definitions(USE_FUNC_PTR=1)
-#     message("\n\tKompilowanie z użyciem${Green} wskaźników na funkcje${ColorReset}"
-#             "\n\tzamiast ${Red}std::function${ColorReset}.\n\n"
-#             "\tW celu zmiany, należy wywołać CMake z poleceniem ${Red}-DUSE_FUNC_PTR=0${ColorReset}\n")
-            
-# endif (NOT USE_FUNC_PTR)
+
+find_package(PythonLibs)
+
+include_directories(${PYTHON_INCLUDE_DIRS} ${PYBIND_INCL_DIR})
+link_libraries(${PYTHON_LIBRARIES})
 
 # Czy widzieć polecenie wywoływane przez make
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -70,8 +63,7 @@ add_compile_definitions(__TESTS_OUTPUT_DIRECTORY__="${CMAKE_TESTS_OUTPUT_DIRECTO
 
 add_custom_target(clean_outputs ALL rm -f ${CMAKE_TESTS_OUTPUT_DIRECTORY}/*
                   COMMENT "Usuwanie danych wyjściowych testów")
-
-
+                  
 add_subdirectory("src")
 add_subdirectory("tests")
 
