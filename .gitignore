@@ -71,5 +71,7 @@ backend/src/*
 !backend/src/NumODE/*
 !backend/src/IndefInt
 !backend/src/IndefInt/*
+!backend/src/Global/
+!backend/src/Global/*
 
 
