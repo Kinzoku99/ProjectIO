@@ -10,6 +10,7 @@
     * `step_size: float` - wielkość kroku metody
     
     Zwraca:
+    * `tex_function: string` - wzór funkcji zapisany w Latexu
     * `result: float` - aproksymacja całki z podanej funkcji
 
   
@@ -24,6 +25,7 @@
     * `tol: float` - tolerancja, którą pragniemy osiągnąć
 
     Zwraca:
+    * `tex_function: string` - wzór funkcji zapisany w Latexu
     * `result: float` - aproksymacja całki z podanej funkcji
 
 
@@ -65,10 +67,11 @@
 
     Argumenty:
     * `function_expression: string` - napis zawierający definicję funkcji
-    * `variable_name: string` - napis zawierający nazwę zmiennej
+    * `[optional] variable_name: string` - napis zawierający nazwę zmiennej
 
     Zwraca:
-    * `tex_string: string` - wynik 
+    * `tex_function: string` - wzór funkcji zapisany w Latexu
+    * `tex_result: string` - wynik 
 
 
 * `[temp]` **POST** `/api/calculator/graph/` - Rysowanie wykresów funkcji.
@@ -91,7 +94,7 @@
     Zwraca:
     * `elements: object[]` - tablica obiektów przechowujących rekordy galerii; obiekty są postaci:
       * `id: int` - unikalne id elementu
-      * `tex_string: string` - napis zawierający kod w texu przedstawiający definicję funkcji
+      * `tex_string: string` - napis zawierający kod w Latexu przedstawiający definicję funkcji
       * `variable_name: string` - napis zawierający nazwę zmiennej
       * `x_values: float[]` - tablica argumentów funkcji
       * `y_values: float[]` - tablica wartości funkcji
@@ -106,7 +109,7 @@
     Zwraca:
     * `elements: object[]` - tablica obiektów przechowujących rekordy galerii; obiekty są postaci:
       * `id: int` - unikalne id elementu
-      * `tex_string: string` - napis zawierający kod w texu przedstawiający definicję funkcji
+      * `tex_string: string` - napis zawierający kod w Latexu przedstawiający definicję funkcji
       * `variable_name: string` - napis zawierający nazwę zmiennej
       * `x_values: float[]` - tablica argumentów funkcji
       * `y_values: float[]` - tablica wartości funkcji
@@ -116,11 +119,11 @@
 
     Argumenty: 
     * `function_expression: string` - napis zawierający definicję funkcji
-    * `tex_string: string` - napis zawierający kod w texu przedstawiający definicję funkcji
+    * `tex_string: string` - napis zawierający kod w Latexu przedstawiający definicję funkcji
     * `variable_name: string` - napis zawierający nazwę zmiennej
   
     Zwraca:
     * `id: int` - unikalne id elementu
     * `function_expression: string` - napis zawierający definicję funkcji
-    * `tex_string: string` - napis zawierający kod w texu przedstawiający definicję funkcji
+    * `tex_string: string` - napis zawierający kod w Latexu przedstawiający definicję funkcji
     * `variable_name: string` - napis zawierający nazwę zmiennej

@@ -60,7 +60,8 @@ const IntValueCalculator: React.FC = () => {
                 })
                     .then((data) => {
                         if (data !== null) {
-                            setResult("\\int_0^1 dx\\: \\: " + formData.formula + " = " + roundFloat(data.result));
+                            setResult("\\int_{" + valuesRequest1.interval_begin + "}^{" + valuesRequest1.interval_end
+                                + "} dx\\: \\: " + data.tex_function + " = " + roundFloat(data.result));
                             setInputValid("");
                         }
                     });
@@ -81,7 +82,8 @@ const IntValueCalculator: React.FC = () => {
                     })
                     .then((data) => {
                         if (data !== null) {
-                            setResult("\\int_0^1 dx\\: \\: " + formData.formula + " = " + roundFloat(data.result));
+                            setResult("\\int_{" + valuesRequest2.interval_begin + "}^{" + valuesRequest2.interval_end
+                                + "} dx\\: \\: " + data.tex_function + " = " + roundFloat(data.result));
                             setInputValid("");
                         }
                     });

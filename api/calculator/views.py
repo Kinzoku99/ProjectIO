@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from calculator_functions.calculate_graph import calculate_graph
 from calculator_functions.indefinite_integration import parse_and_integrate
+from calculator_functions.other_functions import parse_to_latex
 
 import NumIntTrapezoid
 import NumODERungeKutta
@@ -17,7 +18,10 @@ def integrate_trapezoid(request):
             float(request.data['interval_end']),
             float(request.data['step_size'])
         )
-        return Response({'result': result})
+        return Response({
+            'tex_function': parse_to_latex(request.data['function_expression']),
+            'result': result
+        })
     except Exception:
         return Response(status=HTTP_400_BAD_REQUEST, data={})
 
@@ -33,7 +37,10 @@ def integrate_romberg(request):
             int(request.data['num_of_divisions']),
             float(request.data['tol'])
         )
-        return Response({'result': result})
+        return Response({
+            'tex_function': parse_to_latex(request.data['function_expression']),
+            'result': result
+        })
     except Exception:
         return Response(status=HTTP_400_BAD_REQUEST, data={})
 
@@ -103,10 +110,14 @@ def indefinite_integration(request):
     try:
         if 'variable_name' in request.data:
             return Response({
-                'tex_string': parse_and_integrate(request.data['function_expression'], request.data['variable_name'])
+                'tex_function': parse_to_latex(request.data['function_expression']),
+                'tex_result': parse_and_integrate(request.data['function_expression'], request.data['variable_name'])
             })
         else:
-            return Response({'tex_string': parse_and_integrate(request.data['function_expression'])})
+            return Response({
+                'tex_function': parse_to_latex(request.data['function_expression']),
+                'tex_result': parse_and_integrate(request.data['function_expression'])
+            })
     except Exception:
         return Response(status=HTTP_400_BAD_REQUEST, data={})
 
