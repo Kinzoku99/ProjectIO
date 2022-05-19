@@ -103,8 +103,9 @@
 * **GET** `/api/gallery/random/<num>` - zwraca losowe elementy galerii znajdujące się w bazie danych
 
     Argumenty: 
-    * `<num>: unsigned int` - liczba elementów galerii do wylosowania (jeśli mniejsza od 0 lub większa od
-  liczby elementów w bazie danych zwracany jest kod błedu 400)
+    * `<num>: unsigned int` - liczba elementów galerii do wylosowania (jeśli mniejsza od 0 zwracany jest kod błedu 400, 
+  jeśli większa od liczby elementów w bazie danych zwracane są wszystkie elementy z bazy danych w losowej kolejności, 
+  bez powtórzeń)
   
     Zwraca:
     * `elements: object[]` - tablica obiektów przechowujących rekordy galerii; obiekty są postaci:
@@ -119,7 +120,8 @@
 
     Argumenty: 
     * `function_expression: string` - napis zawierający definicję funkcji
-    * `tex_string: string` - napis zawierający kod w Latexu przedstawiający definicję funkcji
+    * `[optional] tex_string: string` - napis zawierający kod w Latexu przedstawiający definicję funkcji (jeśli nie jest
+  podany, zostanie wygenerowany)
     * `variable_name: string` - napis zawierający nazwę zmiennej
   
     Zwraca:

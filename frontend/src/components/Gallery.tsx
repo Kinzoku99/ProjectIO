@@ -16,11 +16,8 @@ class IntegralGraphics {
 }
 
 const Gallery: React.FC = () => {
-    const [cards, setCards] = useState<IntegralGraphics[]>(Array(12).fill(new IntegralGraphics(-1, <div style={{
-        aspectRatio: "1 / 1",
-        width: "90%",
-        margin: "auto"
-    }} className="mt-3"/>, '')));
+    const [loader, setLoader] = useState<JSX.Element>(<div className="lds-ripple"><div/><div/></div>);
+    const [cards, setCards] = useState<IntegralGraphics[]>(Array(0));
 
     useEffect(() => {
         fetch(currentURL + 'gallery/random/12', {
@@ -38,14 +35,19 @@ const Gallery: React.FC = () => {
                         "\\int \\:" + element.tex_string + " \\:d" + element.variable_name)
                     );
                 }
-                setCards(() => {
-                    return cardsFilled;
-                })
-            })
-    }, [])
+                setCards(cardsFilled);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (cards.length > 0) {
+            setLoader(<div/>);
+        }
+    }, [cards])
 
     return (
         <div>
+            {loader}
             <div className="album py-5">
                 <div className="container">
                     <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">

@@ -22,8 +22,8 @@ def integrate_trapezoid(request):
             'tex_function': parse_to_latex(request.data['function_expression']),
             'result': result
         })
-    except Exception:
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+    except Exception as e:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
 
 @api_view(['POST'])
 def integrate_romberg(request):
@@ -41,8 +41,8 @@ def integrate_romberg(request):
             'tex_function': parse_to_latex(request.data['function_expression']),
             'result': result
         })
-    except Exception:
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+    except Exception as e:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
 
 @api_view(['POST'])
 def des_runge_kutta1(request):
@@ -66,8 +66,8 @@ def des_runge_kutta1(request):
             y_values.append(val[1])
 
         return Response({'x_values': x_values, 'y_values': y_values})
-    except Exception:
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+    except Exception as e:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
 
 @api_view(['POST'])
 def des_runge_kutta2(request):
@@ -102,8 +102,8 @@ def des_runge_kutta2(request):
             y_values.append(val[1])
 
         return Response({'x_values': x_values, 'y_values': y_values})
-    except Exception:
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+    except Exception as e:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
 
 @api_view(['POST'])
 def indefinite_integration(request):
@@ -118,8 +118,8 @@ def indefinite_integration(request):
                 'tex_function': parse_to_latex(request.data['function_expression']),
                 'tex_result': parse_and_integrate(request.data['function_expression'])
             })
-    except Exception:
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+    except Exception as e:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
 
 @api_view(['POST'])
 def graph(request):

@@ -9,6 +9,7 @@ import NumIntTrapezoid
 import NumODERungeKutta
 
 from calculator_functions.default_calculator_params import calculator_params
+from calculator_functions.other_functions import parse_to_latex
 
 import random
 
@@ -62,17 +63,19 @@ def get_gallery_elements(request):
 
 @api_view(['GET'])
 def get_random_gallery_elements(request, pk):
-    if int(pk) < 0:
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+    argument = int(pk)
+
+    if argument < 0:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': 'Argument mniejszy od 0'})
 
     elements = GalleryEntry.objects.all()
     serializer = GalleryEntrySerializer(elements, many=True)
 
-    if int(pk) > len(serializer.data):
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+    if argument > len(serializer.data):
+        argument = len(serializer.data)
 
     data = []
-    random_elements = random.sample(range(len(serializer.data)), int(pk))
+    random_elements = random.sample(range(len(serializer.data)), argument)
 
     for i in random_elements:
         data.append(serializer.data[i])
@@ -81,10 +84,18 @@ def get_random_gallery_elements(request, pk):
 
 @api_view(['POST'])
 def create_gallery_element(request):
-    serializer = GalleryEntrySerializer(data=request.data)
+    try:
+        data_to_serialize = request.data
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    else:
-        return Response(status=HTTP_400_BAD_REQUEST, data={})
+        if 'tex_string' not in request.data:
+            data_to_serialize['tex_string'] = parse_to_latex(request.data['function_expression'])
+
+        serializer = GalleryEntrySerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            raise Exception
+    except Exception:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': 'Zły obiekt'})
