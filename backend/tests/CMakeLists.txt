@@ -12,7 +12,7 @@ file (GLOB TEST_HEADER_FILES CMAKE_CONFIGURE_DEPENDS
 # Tworzymy bibliotekę testową, która udostępnia podstawowy interfejs do testów
 add_library(testing_lib INTERFACE)
 target_include_directories(testing_lib INTERFACE "src")
-target_link_libraries(testing_lib INTERFACE num_int_lib num_ode_lib main_header_lib)
+target_link_libraries(testing_lib INTERFACE num_int_lib num_ode_lib)
 
 # Tworzymy test z każdego pliku źródłowego w tests/src
 foreach(testsourcefile ${TEST_SOURCE_FILES})

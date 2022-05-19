@@ -19,8 +19,9 @@
 
 
 
-// Definicja real_function
-#include "../MainHeaders/main_definitions.hpp"
+
+#include <main_definitions.hpp>
+#include <expr_handler.hpp>
 
 #define MAX_POINTS_ON_PLOT 2000
 

@@ -20,15 +20,19 @@
 
 
 
-double integrate_trapezoid(const std::string &func_expr, const std::string &var_name, double b, double e, double h){
+double integrate_trapezoid(const std::string &func_expr, const std::string &var_name, double b, double e, size_t num_of_divisions){
     expr_t expression;
     double variable;
 
     initialize_expression(func_expr, var_name, expression, variable);
     
-    real_function handler = get_handler(b, e, expression, variable);
-
-    return trapezoid_quadrature_01(handler, h / fabs(e - b));
+    handler_out handler = get_handler(b, e, expression, variable);
+    return  trapezoid_quadrature_01(
+                handler.t_func,
+                num_of_divisions,
+                handler.left_infinite,
+                handler.right_infinite
+            );
 }
 
 double integrate_romberg(const std::string &func_expr, const std::string &var_name, double b, double e, size_t num_of_divisions, double tol){
@@ -37,32 +41,45 @@ double integrate_romberg(const std::string &func_expr, const std::string &var_na
 
     initialize_expression(func_expr, var_name, expression, variable);
     
-    real_function handler = get_handler(b, e, expression, variable);
+    handler_out handler = get_handler(b, e, expression, variable);
 
-    return romberg_quadrature_01(handler, num_of_divisions, tol);
+    return  romberg_quadrature_01(
+                handler.t_func,
+                num_of_divisions,
+                tol,
+                handler.left_infinite,
+                handler.right_infinite
+            );
 }
 
 
 double trapezoid_quadrature_01(
-  const real_function &function,   /**< Funkcja przyjmująca i przekazująca
-                                 parametr typu double.               */
-  double h                  ///< Długość pojedynczego podziału
+  const real_function &function,    /**< Funkcja przyjmująca i przekazująca
+                                         parametr typu double.           */
+  size_t num_of_divisions,          ///< Liczba podziałów
+  bool exclude_left = false,        ///< Czy pominąć ewaluację w lewym krańcu
+  bool exclude_right = false        ///< Czy pominąć ewaluację w prawym krańcu
 ){
     double evaluation = 0;
     double x = 0;
+    double h = 1.0 / num_of_divisions;
 
-    evaluation += function(0) / 2.0;
+    if (!exclude_left)
+        evaluation += function(0) / 2.0;
     x += h;
     while (x < 1.0){
-        // evaluation += function(x) / 2.0;
-        // evaluation += function(x) / 2.0;
         evaluation += function(x);
         x += h;
     }
-    x -= h;
-    evaluation -= function(x) / 2.0;
-    evaluation *= h;
-    evaluation += (function(1) + function(x)) * (1.0 - x) / 2.0;
+    // Poprawka na wyjściu, mogliśmy dodać fragment odpowiadający
+    // trapezowi wystającemu poza (0,1)
+    x -= h;                             // wracamy do poprzedniego p. ewaluacji
+    evaluation -= function(x) / 2.0;    // usuwamy nadmiar
+    evaluation *= h;                    // wszystkie trapzey miały podst. = h
+    
+    if (!exclude_right)
+        // dodajemy ostatni trapez o innej (1 - x) podstawie
+        evaluation += (function(1) + function(x)) * (1.0 - x) / 2.0;
 
     return evaluation;
 }
@@ -72,14 +89,13 @@ double trapezoid_quadrature_01(
  *        dla złożonej kwadratury trapezów
  */
 double romberg_quadrature_01(
-  const real_function &function,   /**< Funkcja przyjmująca i przekazująca
-                                 parametr typu double.               */
-  size_t num_of_divisions,  ///< Liczba wstępnych podziałów do wykonania
-  double tol                ///< Oczekiwana tolerancja końcowa
+  const real_function &function,    /**< Funkcja przyjmująca i przekazująca
+                                         parametr typu double.           */
+  size_t num_of_divisions,          ///< Liczba wstępnych podziałów do wykonania
+  double tol,                       ///< Oczekiwana tolerancja końcowa
+  bool exclude_left = false,        ///< Czy pominąć ewaluację w lewym krańcu
+  bool exclude_right = false        ///< Czy pominąć ewaluację w prawym krańcu
 ){
-    // h to długość pojedynczego podziału w ostatnio użytej metodzie trapezów
-    double h = 1.0 / num_of_divisions;
-
     // Pozycja elementu o najmniejszej długości podziału
     size_t current_position = MAX_ROMBERG_STEPS - 1; 
 
@@ -90,7 +106,9 @@ double romberg_quadrature_01(
     size_t algorithm_iteration = 0;
 
     // Funkcja trapezoid_quadrature_01 oblicza złożoną kwadraturę trapezów
-    romberg_evals[MAX_ROMBERG_STEPS-1] = trapezoid_quadrature_01(function, h);
+    romberg_evals[MAX_ROMBERG_STEPS-1] =
+        trapezoid_quadrature_01(function, num_of_divisions,
+                                exclude_left, exclude_right);
 
     while((algorithm_iteration < MAX_ROMBERG_STEPS -1) && !accuracy_achieved){
         
@@ -99,9 +117,12 @@ double romberg_quadrature_01(
         double last_best_approximation = romberg_evals[MAX_ROMBERG_STEPS - 1];
 
         // Nowe przybliżenie, musi być obliczone z h o połowę mniejszym
-        double new_h = h / 2.0;
+        // czyli liczba podziałów musi się zwiększyć dwukrotnie
+        num_of_divisions *= 2;
         // Obliczamy nowe przybliżenie i zapisujemy na lewo od już posiadanych
-        romberg_evals[current_position - 1] = trapezoid_quadrature_01(function, new_h);
+        romberg_evals[current_position - 1] =
+            trapezoid_quadrature_01(function, num_of_divisions,
+                                    exclude_left, exclude_right);
 
         /**********************************************************************
          * W metodzie Romberga, ważne są współczynniki, które zależą od
@@ -145,9 +166,8 @@ double romberg_quadrature_01(
         // w.p.p. nic nie robimy, accuracy_achieved pozostaje false
         
         // Przechodzimy do następnej iteracji metody:
-        // aktualizujemy akutalną pozycję i ostatnio dokonany podział
+        // aktualizujemy akutalną pozycję
         --current_position;
-        h = new_h;
         // oraz zwiększamy licznik iteracji
         ++algorithm_iteration;
     }
