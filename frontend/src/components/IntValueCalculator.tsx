@@ -3,10 +3,11 @@ import Gallery from "./Gallery";
 import {EQ} from "../mathOutputFunctions";
 import {CalculatorSettings} from "../calculatorSettings";
 import currentURL from "../URLconfig";
+import {getValueFromLS} from "../otherFunctions";
 
 const IntValueCalculator: React.FC = () => {
     let [formula, setFormula] = useState<string>('');
-    let [radio, setRadio] = useState<string>('trapezoid');
+    let [radio, setRadio] = useState<string>(getValueFromLS('int_value_method', CalculatorSettings.int_value_method));
     let [result, setResult] = useState<string>('');
     let [inputValid, setInputValid] = useState<string>('');
 
@@ -19,19 +20,19 @@ const IntValueCalculator: React.FC = () => {
         else {
             const valuesRequest1 = {
                 function_expression: formula,
-                variable_name: CalculatorSettings.variable_name,
+                variable_name: getValueFromLS('variable_name', CalculatorSettings.variable_name),
                 interval_begin: CalculatorSettings.interval_begin,
                 interval_end: CalculatorSettings.interval_end,
-                step_size: CalculatorSettings.step_size
+                step_size: parseFloat(getValueFromLS('step_size_trapezoid', CalculatorSettings.step_size.toString()))
             }
 
             const valuesRequest2 = {
                 function_expression: formula,
-                variable_name: CalculatorSettings.variable_name,
+                variable_name: getValueFromLS('variable_name', CalculatorSettings.variable_name),
                 interval_begin: CalculatorSettings.interval_begin,
                 interval_end: CalculatorSettings.interval_end,
-                num_of_divisions: CalculatorSettings.num_of_divisions,
-                tol: CalculatorSettings.tol
+                num_of_divisions: parseInt(getValueFromLS('num_of_divisions', CalculatorSettings.num_of_divisions.toString())),
+                tol: parseFloat(getValueFromLS('tol', CalculatorSettings.tol.toString()))
             }
 
             if (radio === "trapezoid") {

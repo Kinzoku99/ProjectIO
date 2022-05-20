@@ -4,6 +4,7 @@ import {useForm} from "react-hook-form";
 import {CalculatorSettings} from "../calculatorSettings";
 import currentURL from "../URLconfig";
 import BigGraph from "./graphs/BigGraph";
+import {getValueFromLS} from "../otherFunctions";
 
 type FormData = {
     formula_expression: string,
@@ -36,20 +37,20 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
         if (isFormulaValid && isBegValid && isEndValid) {
             const valuesRequest1 = {
                 function_expression: formData.formula_expression,
-                variable_name: CalculatorSettings.variable_name,
-                step_size: CalculatorSettings.step_size,
-                num_of_divisions: CalculatorSettings.num_of_divisions,
-                tol: CalculatorSettings.tol,
+                variable_name: getValueFromLS('variable_name', CalculatorSettings.variable_name),
+                step_size: parseFloat(getValueFromLS('step_size_graph', CalculatorSettings.step_size.toString())),
+                num_of_divisions: parseInt(getValueFromLS('num_of_divisions', CalculatorSettings.num_of_divisions.toString())),
+                tol: parseFloat(getValueFromLS('tol', CalculatorSettings.tol.toString())),
                 begin_of_integrating_interval: formData.beg,
                 end_of_integrating_interval: formData.end,
-                rank_of_solver: CalculatorSettings.rank_of_solver
+                rank_of_solver: parseInt(getValueFromLS('rank_of_solver', CalculatorSettings.rank_of_solver.toString()))
             }
 
             const valuesRequest2 = {
                 function_expression: formData.formula_expression,
                 beg_x: formData.beg,
                 end_x: formData.end,
-                step_size: CalculatorSettings.step_size
+                step_size: parseFloat(getValueFromLS('step_size_graph', CalculatorSettings.step_size.toString()))
             }
 
             fetch(currentURL + 'calculator/des_runge_kutta/2/', {

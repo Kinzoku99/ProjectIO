@@ -8,5 +8,6 @@ export const CalculatorSettings = {
     beg_x: -100,
     end_x: 100,
     interval_begin: 0,
-    interval_end: 1
+    interval_end: 1,
+    int_value_method: 'trapezoid'
 };

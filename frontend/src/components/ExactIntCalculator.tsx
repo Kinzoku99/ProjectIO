@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {EQ, iEQ} from "../mathOutputFunctions";
 import Gallery from "./Gallery";
-import {CalculatorSettings} from "../calculatorSettings";
 import currentURL from "../URLconfig";
 
 

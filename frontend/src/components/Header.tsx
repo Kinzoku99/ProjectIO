@@ -63,6 +63,10 @@ const Header: React.FC = () => {
                                         </li>
                                     </ul>
                                 </li>
+
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/settings">Ustawienia</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
