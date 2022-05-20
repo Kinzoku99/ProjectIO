@@ -11,6 +11,7 @@ CMakeFiles
 cmake*
 DartConfiguration.tcl
 Testing/
+build/
 
 
 #### Testy ####
