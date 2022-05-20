@@ -11,7 +11,7 @@
     
     Zwraca:
     * `tex_function: string` - wzór funkcji zapisany w Latexu
-    * `result: float` - aproksymacja całki z podanej funkcji
+    * `result: string` - aproksymacja całki z podanej funkcji
 
   
 * **POST** `/api/calculator/integrate_romberg/` - Całkowanie numeryczne z użyciem metody Romberga.
@@ -26,7 +26,7 @@
 
     Zwraca:
     * `tex_function: string` - wzór funkcji zapisany w Latexu
-    * `result: float` - aproksymacja całki z podanej funkcji
+    * `result: string` - aproksymacja całki z podanej funkcji
 
 
 * **POST** `/api/calculator/des_runge_kutta/1` - Traktując zadanie całkowania jak proste RRZ, znajduje jego trajektorię.

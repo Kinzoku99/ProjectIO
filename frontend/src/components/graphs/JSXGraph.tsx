@@ -17,6 +17,8 @@ type JSXGraphState = {
     board: any;
 }
 
+const BoardContext = React.createContext<any>(null);
+
 class JSXGraph extends React.Component<JSXGraphProps, JSXGraphState> {
     private readonly id: string;
     private readonly defaultStyle: {};
@@ -28,11 +30,6 @@ class JSXGraph extends React.Component<JSXGraphProps, JSXGraphState> {
         this.id = 'board_' + Math.random().toString(36).slice(2, 11);
         this.defaultStyle = {};
         this.defaultBoardAttributes = {};
-    }
-
-    // called right before child lifecycles, passes context object to all children
-    getChildContext() {
-        return { board: this.state.board };
     }
 
     // called only after initial render
@@ -54,7 +51,9 @@ class JSXGraph extends React.Component<JSXGraphProps, JSXGraphState> {
         let style = assign(this.defaultStyle, this.props.style || {})
 
         return (
-            <div id={this.id} className={'jxgbox ' + this.props.className} style={style} />
+            <BoardContext.Provider value={this.state.board}>
+                <div id={this.id} className={'jxgbox ' + this.props.className} style={style} />
+            </BoardContext.Provider>
         )
     }
 }

@@ -52,7 +52,7 @@
 }
 
 #formula, #formula2 {
-    width: "80%" !important;
+    width: 80% !important;
 }
 
 @media (min-width: 768px) {
@@ -188,4 +188,13 @@
 		height: 72px;
 		opacity: 0;
 	}
+}
+
+#header-logo {
+	width: 23px;
+	height: 23px;
+}
+
+#main-page article {
+	margin-bottom: 1rem;
 }

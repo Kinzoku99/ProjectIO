@@ -1,9 +1,13 @@
+import math
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from calculator_functions.calculate_graph import calculate_graph
 from calculator_functions.indefinite_integration import parse_and_integrate
 from calculator_functions.other_functions import parse_to_latex
+from calculator_functions.other_functions import generate_float_string
+from calculator_functions.other_functions import generate_float_arrays
 
 import NumIntTrapezoid
 import NumODERungeKutta
@@ -20,7 +24,7 @@ def integrate_trapezoid(request):
         )
         return Response({
             'tex_function': parse_to_latex(request.data['function_expression']),
-            'result': result
+            'result': generate_float_string(result)
         })
     except Exception as e:
         return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
@@ -39,7 +43,7 @@ def integrate_romberg(request):
         )
         return Response({
             'tex_function': parse_to_latex(request.data['function_expression']),
-            'result': result
+            'result': generate_float_string(result)
         })
     except Exception as e:
         return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
@@ -58,14 +62,7 @@ def des_runge_kutta1(request):
             int(request.data['rank_of_solver'])
         )
 
-        x_values = []
-        y_values = []
-
-        for val in result:
-            x_values.append(val[0])
-            y_values.append(val[1])
-
-        return Response({'x_values': x_values, 'y_values': y_values})
+        return Response(generate_float_arrays(result))
     except Exception as e:
         return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
 
@@ -94,14 +91,7 @@ def des_runge_kutta2(request):
             int(request.data['rank_of_solver'])
         )
 
-        x_values = []
-        y_values = []
-
-        for val in result:
-            x_values.append(val[0])
-            y_values.append(val[1])
-
-        return Response({'x_values': x_values, 'y_values': y_values})
+        return Response(generate_float_arrays(result))
     except Exception as e:
         return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
 

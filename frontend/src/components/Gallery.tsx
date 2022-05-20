@@ -52,12 +52,12 @@ const Gallery: React.FC = () => {
                 <div className="container">
                     <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                         {cards.map((card) => (
-                            <div id={card.id.toString()} className="col">
+                            <div key={card.id} className="col">
                                 <div className="card shadow-sm">
                                     {card.graph}
 
                                     <div className="card-body">
-                                        <p className="card-text">{EQ(card.text)}</p>
+                                        <div className="card-text">{EQ(card.text)}</div>
                                     </div>
                                 </div>
                             </div>))}

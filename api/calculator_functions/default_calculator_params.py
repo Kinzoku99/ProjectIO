@@ -8,5 +8,6 @@ calculator_params = {
     'beg_x': -40,
     'end_x': 40,
     'interval_begin': 0,
-    'interval_end': 1
+    'interval_end': 1,
+    'float_precision': 8
 }

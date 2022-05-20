@@ -3,32 +3,22 @@ import Gallery from "./Gallery";
 import {EQ} from "../mathOutputFunctions";
 import {CalculatorSettings} from "../calculatorSettings";
 import currentURL from "../URLconfig";
-import {useForm} from "react-hook-form";
-
-type FormData = {
-    formula: string,
-    methodRadio: any
-}
-
-const PRECISION = 8;
-
-const roundFloat = (number: number): string => {
-    let factor = Math.pow(10, PRECISION);
-    return (Math.round(number * factor) / factor).toString();
-}
 
 const IntValueCalculator: React.FC = () => {
-    const {register, handleSubmit} = useForm<FormData>();
-    let [result, setResult] = useState<string>("");
-    let [inputValid, setInputValid] = useState<string>("");
+    let [formula, setFormula] = useState<string>('');
+    let [radio, setRadio] = useState<string>('trapezoid');
+    let [result, setResult] = useState<string>('');
+    let [inputValid, setInputValid] = useState<string>('');
 
-    const onSubmit = handleSubmit((formData) => {
-        if (Object.entries(formData.formula).length === 0) {
+    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (formula.length === 0) {
             setInputValid(' is-invalid');
         }
         else {
             const valuesRequest1 = {
-                function_expression: formData.formula,
+                function_expression: formula,
                 variable_name: CalculatorSettings.variable_name,
                 interval_begin: CalculatorSettings.interval_begin,
                 interval_end: CalculatorSettings.interval_end,
@@ -36,7 +26,7 @@ const IntValueCalculator: React.FC = () => {
             }
 
             const valuesRequest2 = {
-                function_expression: formData.formula,
+                function_expression: formula,
                 variable_name: CalculatorSettings.variable_name,
                 interval_begin: CalculatorSettings.interval_begin,
                 interval_end: CalculatorSettings.interval_end,
@@ -44,7 +34,7 @@ const IntValueCalculator: React.FC = () => {
                 tol: CalculatorSettings.tol
             }
 
-            if (formData.methodRadio === "trapezoid") {
+            if (radio === "trapezoid") {
                 fetch(currentURL + 'calculator/integrate_trapezoid/', {
                     method: 'POST',
                     mode: 'cors',
@@ -61,7 +51,7 @@ const IntValueCalculator: React.FC = () => {
                     .then((data) => {
                         if (data !== null) {
                             setResult("\\int_{" + valuesRequest1.interval_begin + "}^{" + valuesRequest1.interval_end
-                                + "} dx\\: \\: " + data.tex_function + " = " + roundFloat(data.result));
+                                + "} dx\\: \\: " + data.tex_function + " = " + data.result);
                             setInputValid("");
                         }
                     });
@@ -83,13 +73,13 @@ const IntValueCalculator: React.FC = () => {
                     .then((data) => {
                         if (data !== null) {
                             setResult("\\int_{" + valuesRequest2.interval_begin + "}^{" + valuesRequest2.interval_end
-                                + "} dx\\: \\: " + data.tex_function + " = " + roundFloat(data.result));
+                                + "} dx\\: \\: " + data.tex_function + " = " + data.result);
                             setInputValid("");
                         }
                     });
             }
         }
-    })
+    };
 
     const convertRemToPixels = (rem : number) => rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 
@@ -129,14 +119,14 @@ const IntValueCalculator: React.FC = () => {
                     <section className="container">
                         <div className="row">
                             <div className="col-lg-6 col-md-8 mx-auto">
-                                <form noValidate={true} onSubmit={onSubmit}>
+                                <form noValidate={true} onSubmit={event => onSubmit(event)}>
                                     <div className="row">
                                         <input
                                             type="text"
                                             className={"form-control m-0" + inputValid}
                                             id="formula2"
                                             style={{width: "80%"}}
-                                            {...register("formula")}
+                                            onChange={event => setFormula(event.target.value)}
                                         />
                                         <button
                                             type="submit"
@@ -152,8 +142,9 @@ const IntValueCalculator: React.FC = () => {
                                                 type="radio"
                                                 id="methodRadio1"
                                                 value="trapezoid"
-                                                checked
-                                                {...register("methodRadio")}
+                                                name="methodRadio"
+                                                checked={radio === "trapezoid"}
+                                                onChange={event => setRadio(event.target.value)}
                                             />
                                             <label className="form-check-label fw-light" htmlFor="flexRadioDefault1">
                                                 Metoda złożonej kwadratury trapezów
@@ -163,9 +154,11 @@ const IntValueCalculator: React.FC = () => {
                                             <input
                                                 className="form-check-input"
                                                 type="radio"
-                                                id="methodRadio2"
+                                                id="methodRadio1"
                                                 value="romberg"
-                                                {...register("methodRadio")}
+                                                name="methodRadio"
+                                                checked={radio === "romberg"}
+                                                onChange={event => setRadio(event.target.value)}
                                             />
                                             <label className="form-check-label fw-light" htmlFor="flexRadioDefault2">
                                                 Metoda Romberga

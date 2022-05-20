@@ -9,7 +9,7 @@ const MainPage: React.FC = () => {
     }
 
     return (
-        <main>
+        <main id="main-page">
             {/* To jest sekcja nagłówka naszej strony czyli o czym to jest */}
             <section className="container text-center py-5">
                 <div className="row py-lg-5">
@@ -32,16 +32,16 @@ const MainPage: React.FC = () => {
                     <div className="col-lg-8 mx-auto">
                         <h2 className="fw-light">Całka Riemanna</h2>
 
-                        <p>
+                        <article>
                             <h3 className="h5 fw-light">Podział odcinka</h3>
 
                             Podziałem {iEQ("P")} przedziału {iEQ("[a,b]")} nazywa się każdy ściśle
                             rosnący ciąg skończony {iEQ("p_1, \\ldots, p_n")} elementów nazywanych
                             {italics("punktami podziału")} tego przedziału, gdzie
                             {EQ("a = p_0 < p_1 < \\ldots < p_{n-1} < p_n = b")}
-                        </p>
+                        </article>
 
-                        <p>
+                        <article>
                             <h3 className="h5 fw-light">Całka dolna i górna</h3>
 
                             Niech dana będzie funkcja ograniczona {iEQ("f:[a,b] \\to \\mathbb{R}")}.
@@ -49,9 +49,9 @@ const MainPage: React.FC = () => {
                             całkę dolną i całkę górną Riemanna {iEQ("L_f")} i {iEQ("U_f")} definiują wzory
                             {EQ("L_f = \\sup_{P \\in \\mathcal{P}}\\left\\{\\sum_{i=1}^n \\inf_{x\\in [p_{i-1},p_i]} f(x) \\cdot (p_i-p_{i-1})\\right\\}")}
                             {EQ("U_f = \\inf_{P \\in \\mathcal{P}}\\left\\{\\sum_{i=1}^n \\sup_{x\\in [p_{i-1},p_i]} f(x) \\cdot (p_i-p_{i-1})\\right\\}")}
-                        </p>
+                        </article>
 
-                        <p>
+                        <article>
                             <h3 className="h5 fw-light">Funkcja całkowalna</h3>
 
                             Funkcja ograniczona {iEQ("f \\colon [a,b] \\to \\mathbb{R}")} jest całkowalna
@@ -62,7 +62,7 @@ const MainPage: React.FC = () => {
                                 istnieje inna definicja całki Riemanna,
                                 ale obie definicje są równoważne.
                             </small>
-                        </p>
+                        </article>
                     </div>
                 </div>
             </section>
@@ -73,7 +73,7 @@ const MainPage: React.FC = () => {
                     <div className="col-lg-8 mx-auto">
                         <h2 className="fw-light">Całka Lebesgue'a</h2>
 
-                        <p>
+                        <article>
                             <h3 className="h5 fw-light">Funkcja prosta</h3>
 
                             Niech {iEQ("\\mathcal{F}")} będzie -ciałem podzbiorów
@@ -82,9 +82,9 @@ const MainPage: React.FC = () => {
                             i zbiory {iEQ("A_1,\\ldots,A_n \\subseteq A")}, że
                             {EQ("f = \\sum_{i=1}^n a_i \\chi(A_i)")}
                             to {iEQ("f")} nazywamy funkcją prostą.
-                        </p>
+                        </article>
 
-                        <p>
+                        <article>
                             <h3 className="h5 fw-light">Funkcja mierzalna</h3>
 
                             W przestrzeni z miarą {iEQ("(X,\\mathcal{F},\\mu)")} elementy
@@ -92,16 +92,16 @@ const MainPage: React.FC = () => {
                             zbiorami {iEQ("\\mu")}-mierzalnymi względem {iEQ("\\mathcal{F}")}.
                             Funkcja {iEQ("f\\colon X \\to \\mathbb{R}")} jest {iEQ("\\mu")}-mierzalna
                             jeśli {iEQ("f^{-1}(U) \\in \\mathcal{F}")} dla dowolnych otwartych {iEQ("U \\subseteq \\mathbb{R}")}.
-                        </p>
+                        </article>
 
-                        <p>
+                        <article>
                             <h3 className="h5 fw-light">Rozbicie zbioru mierzalnego</h3>
 
                             Przeliczalna suma zbiorów {iEQ("E_1,\\ldots")} jest rozbiciem zbioru mierzalnego {iEQ("E")}
                             wtedy i tylko wtedy gdy {iEQ("E_i")} są mierzalne, parami rozłączne i {iEQ("\\bigcup E_i = E")}.
-                        </p>
+                        </article>
 
-                        <p>
+                        <article>
                             <h3 className="h5 fw-light">Całka z funkcji mierzalnej</h3>
 
                             Niech {iEQ("\\mathcal{S}")} będzie zbiorem funkcji prostych.
@@ -109,7 +109,7 @@ const MainPage: React.FC = () => {
                             rodziną rozbić zbioru {iEQ("E")}. Całkę Lebesgue'a funkcji {iEQ("f")} na {iEQ("E")} definiuje się jako.
                             {EQ("\\int_{E} f d\\mu = \\sup_{(E_1,\\ldots) \\in \\mathcal{R}(E)}\\left(\\sum_{i=1}^{\\infty} \\inf_{x \\in E_i} \\max(f(x),0) \\mu(E_i)\\right)")}
                             {EQ("- \\sup_{(E_1,\\ldots) \\in \\mathcal{R}(E)}\\left(\\sum_{i=1}^{\\infty} \\inf_{x \\in E_i} -\\min(f(x),0) \\mu(E_i)\\right)")}
-                        </p>
+                        </article>
                     </div>
                 </div>
             </section>

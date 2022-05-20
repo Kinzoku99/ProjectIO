@@ -6,7 +6,7 @@ import currentURL from "../URLconfig";
 import BigGraph from "./graphs/BigGraph";
 
 type FormData = {
-    formula: string,
+    formula_expression: string,
     beg: number,
     end: number
 }
@@ -25,7 +25,7 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
     let [endValid, setEndValid] = useState<string>("");
 
     const onSubmit = handleSubmit((formData) => {
-        const isFormulaValid = Object.entries(formData.formula).length !== 0;
+        const isFormulaValid = Object.entries(formData.formula_expression).length !== 0;
         const isBegValid = !isNaN(formData.beg);
         const isEndValid = !isNaN(formData.end);
 
@@ -33,11 +33,9 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
         setBegValid(isBegValid ? ' is-valid' : ' is-invalid');
         setEndValid(isEndValid ? ' is-valid' : ' is-invalid');
 
-        console.log(formData)
-
         if (isFormulaValid && isBegValid && isEndValid) {
             const valuesRequest1 = {
-                function_expression: formData.formula,
+                function_expression: formData.formula_expression,
                 variable_name: CalculatorSettings.variable_name,
                 step_size: CalculatorSettings.step_size,
                 num_of_divisions: CalculatorSettings.num_of_divisions,
@@ -48,7 +46,7 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
             }
 
             const valuesRequest2 = {
-                function_expression: formData.formula,
+                function_expression: formData.formula_expression,
                 beg_x: formData.beg,
                 end_x: formData.end,
                 step_size: CalculatorSettings.step_size
@@ -145,9 +143,9 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
                                         <input
                                             type="text"
                                             className={"form-control" + formulaValid}
-                                            id="formula"
+                                            id="formula_expression"
                                             placeholder="formula"
-                                            {...register("formula")}
+                                            {...register("formula_expression")}
                                         />
                                         <label htmlFor="formula">Wzór</label>
                                     </div>
