@@ -2,8 +2,6 @@
 #include <num.Integrals.hpp>
 #include <cmath>
 
-#define GLOBAL_TOLERANCE 1e-10
-
 const size_t number_of_nodes[] = {
     1, 5, 10
 };
@@ -91,6 +89,10 @@ int main(){
     truth = get_hardcoded_nodes(hermite_roots_order10, 10);
 
     printf_nodes(comp, truth);
+
+    
+
+    print_qdrtr_nodes(Chebyshev, 5);
 
     return 0;
 }

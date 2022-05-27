@@ -14,7 +14,9 @@ Tester MINF_TO_ZERO_TESTS {
 };
 
 Tester MINF_TO_INF_TESTS {
-
+    Testing_unit("exp(-f^2)", "non_elementary", "f"),
+    Testing_unit("exp(-y^4)", "non elementary", "y"),
+    //Testing_unit("sin(x)/x", "Si(x)", "x"),
 };
 
 const double one_inf_integrals[] = {
@@ -26,6 +28,12 @@ const double one_inf_integrals[] = {
 const double minf_zero_integrals[] = {
     1.0,            /* exp(-q)   */
     sqrt(M_PI)/2.0, /* exp(-a^2) */
+};
+
+const double minf_inf_integrals[] = {
+    M_SQRT_PIl,
+    1.8128049541109541559653425779338360014L,
+    M_PIl
 };
 
 void check_trap_romb(size_t nod, double tol,
@@ -72,7 +80,7 @@ int main(){
     
     check_trap_romb(nod, tol, one_inf_integrals, ONE_TO_INF_TESTS, 1.0, INFINITY);
     check_trap_romb(nod, tol, minf_zero_integrals, MINF_TO_ZERO_TESTS, -INFINITY, 0.0);
-
+    check_trap_romb(nod*3, tol, minf_inf_integrals, MINF_TO_INF_TESTS, -INFINITY, INFINITY);
 
     
 

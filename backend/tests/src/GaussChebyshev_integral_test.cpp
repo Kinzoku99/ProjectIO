@@ -34,24 +34,25 @@ int main(){
         
         check_integration_test(test_func, calculated, -1 + __FLT_EPSILON__, 1 - __FLT_EPSILON__);
     }
-    // for (auto &test : GAUSS_CHEBYSHEV_TESTS){
-    //     double calculated = integrate_gauss(test.input_name, test.variable_name, Chebyshev, 1e8);
 
-    //     if (test.result_name != "non elementary"){
-    //         expr_t test_expr;
-    //         double test_var;
+    for (auto &test : GAUSS_CHEBYSHEV_TESTS){
+        double calculated = integrate_gauss(test.input_name, test.variable_name, Chebyshev, 1e6);
 
-    //         initialize_expression(test.result_name, test.variable_name, test_expr, test_var);
-    //         real_function test_func = [&](double x){
-    //             test_var = x;
-    //             return test_expr.value();
-    //         };
-    //         print_integration_test("Gaussa-Chebysheva", test.input_name, -1, 1, test_func(1) - test_func(-1), calculated);
-    //         check_integration_test(test_func, calculated, -1, 1);
-    //     }
-    //     else {
-    //         print_integration_test("Gaussa-Chebysheva", test.input_name, -1, 1, 0, calculated);
-    //     }
+        if (test.result_name != "non elementary"){
+            expr_t test_expr;
+            double test_var;
 
-    // }
+            initialize_expression(test.result_name, test.variable_name, test_expr, test_var);
+            real_function test_func = [&](double x){
+                test_var = x;
+                return test_expr.value();
+            };
+            print_integration_test("Gaussa-Chebysheva", test.input_name, -1, 1, test_func(1) - test_func(-1), calculated);
+            check_integration_test(test_func, calculated, -1, 1);
+        }
+        else {
+            print_integration_test("Gaussa-Chebysheva", test.input_name, -1, 1, 0, calculated);
+        }
+
+    }
 }
