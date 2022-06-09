@@ -47,12 +47,6 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
-#### pybind ####
-pybind/build
-pybind/.idea
-pybind/cmake-build-debug
-pybind/backend
-
 #### backend ####
 backend/CTestTestfile.cmake
 backend/DartConfiguration.tcl
@@ -60,6 +54,7 @@ backend/Testing/
 backend/.idea
 backend/cmake-build-debug
 backend/tests/*
+backend/build
 !backend/tests/src
 !backend/tests/libraries
 !backend/tests/outputs

@@ -54,36 +54,34 @@ set(CMAKE_CXX_FLAGS ${DEFAULT_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -Og")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
+find_package(LAPACK)
+if (NOT LAPACK_FOUND)
+    message(FATAL_ERROR "Nie odnaleziono pakietu LAPACK.")
+endif (NOT LAPACK_FOUND)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/libraries)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/libraries)
+add_subdirectory(pybind11)
 
-set(CMAKE_TESTS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/outputs)
-add_compile_definitions(__TESTS_OUTPUT_DIRECTORY__="${CMAKE_TESTS_OUTPUT_DIRECTORY}")
+# ExprTK library
+add_library(exprtk_header_lib INTERFACE)
+target_include_directories(exprtk_header_lib INTERFACE "src/MainHeaders")
 
+# Global library
+add_library(global_lib)
+target_sources(global_lib PUBLIC "src/Global/expr_handler.cpp" "src/Global/expr_handler.hpp")
+target_include_directories(global_lib PUBLIC "src/Global")
+target_link_libraries(global_lib exprtk_header_lib)
 
-if (NOT EXISTS ${CMAKE_TESTS_OUTPUT_DIRECTORY})
-    message(STATUS "Tworzenie katalogu wyjściowego dla testów "
-                    "\"" ${CMAKE_TESTS_OUTPUT_DIRECTORY} "\"")
-    file (MAKE_DIRECTORY ${CMAKE_TESTS_OUTPUT_DIRECTORY})
-endif(NOT EXISTS ${CMAKE_TESTS_OUTPUT_DIRECTORY})
+pybind11_add_module(NumIntGauss)
+target_sources(NumIntGauss PRIVATE "src/NumInt/NumInt.Gauss.cpp" "src/NumInt/num.Integrals.hpp")
+target_include_directories(NumIntGauss PUBLIC "src/NumInt")
+target_link_libraries(NumIntGauss PRIVATE exprtk_header_lib global_lib ${LAPACK_LIBRARIES})
 
-add_custom_target(clean_outputs ALL rm -rf ${CMAKE_TESTS_OUTPUT_DIRECTORY}
-                  COMMENT "Usuwanie danych wyjściowych testów")
-                  
-add_subdirectory("src")
-add_subdirectory("tests")
+pybind11_add_module(NumIntTrapezoid)
+target_sources(NumIntTrapezoid PRIVATE "src/NumInt/NumInt.TrapezoidQ.cpp" "src/NumInt/num.Integrals.hpp")
+target_include_directories(NumIntTrapezoid PUBLIC "src/NumInt")
+target_link_libraries(NumIntTrapezoid PRIVATE exprtk_header_lib global_lib ${LAPACK_LIBRARIES})
 
-# TODO Doxygen
-# # Szuakmy Doxygena i tworzymy make doc, do stworzenia dokumentacji
-# find_package(Doxygen)
-# if (DOXYGEN_FOUND)
-#     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-
-#     add_custom_target(doc
-#         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-#         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#         COMMENT "Tworzenie dokumentacji przy pomocy programu Doxygen"
-#         )
-# endif()
+pybind11_add_module(NumODERungeKutta)
+target_sources(NumODERungeKutta PRIVATE "src/NumODE/num.DESolvers.cpp" "src/NumODE/num.DESolvers.hpp")
+target_include_directories(NumODERungeKutta PUBLIC "src/NumODE")
+target_link_libraries(NumODERungeKutta PRIVATE exprtk_header_lib global_lib)

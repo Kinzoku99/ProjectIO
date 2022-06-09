@@ -13,8 +13,8 @@
 #include <cmath>
 #include "exprtk.hpp"
 
-#include "../../../pybind/pybind11/include/pybind11/pybind11.h"
-#include "../../../pybind/pybind11/include/pybind11/stl.h"
+#include "../../pybind11/include/pybind11/pybind11.h"
+#include "../../pybind11/include/pybind11/stl.h"
 
 #ifndef NDEBUG
     #pragma message ( "DEBUG IS ON" )
