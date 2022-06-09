@@ -14,7 +14,9 @@ file (GLOB MAIN_HEADER_FILES
 file (GLOB NUM_INT_TRAPEZOID_MODULE_FILES
     "../backend/src/NumInt/*"
 )
-
+file (GLOB NUM_INT_GAUSS_MODULE_FILES
+    "../backend/src/NumInt/*"
+)
 file (GLOB NUM_ODE_RUNGEKUTTA_MODULE_FILES
     "../backend/src/NumODE/*"
 )
@@ -35,4 +37,5 @@ include_directories(num_ode_lib PUBLIC "../backend/src/NumODE")
 
 add_subdirectory(pybind11)
 pybind11_add_module(NumIntTrapezoid ${NUM_INT_TRAPEZOID_MODULE_FILES} ${MAIN_HEADER_FILES})
+pybind11_add_module(NumIntGauss ${NUM_INT_GAUSS_MODULE_FILES} ${MAIN_HEADER_FILES})
 pybind11_add_module(NumODERungeKutta ${NUM_ODE_RUNGEKUTTA_MODULE_FILES} ${MAIN_HEADER_FILES})

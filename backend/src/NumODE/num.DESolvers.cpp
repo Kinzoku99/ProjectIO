@@ -4,9 +4,9 @@
 #include <cstdio>
 #include <cmath>
 
-// #include <pybind11/pybind11.h>
-//
-// namespace py = pybind11;
+#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
 
 
 void rk1(const real_function &func, double h, uint64_t step, uint16_t numOfPoints, solver_out_t &points){

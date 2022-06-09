@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <algorithm>
 
+#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
 
 
 #define GET_WEIGHT_INTEGRAL(w)  \
@@ -194,4 +197,10 @@ double __raw_integrate_gauss(gauss_quadrature_type t, size_t n, real_function fu
 
     return apply_quadrature(nodes, func);
 
+}
+
+PYBIND11_MODULE(NumIntGauss, handle) {
+     handle.doc() = "";
+     handle.def("integrate_gauss_weight_provided", &integrate_gauss_weight_provided);
+     handle.def("integrate_gauss", &integrate_gauss);
 }

@@ -5,9 +5,9 @@
 #include <cstdio>
 #include <cassert>
 
-// #include <pybind11/pybind11.h>
-//
-// namespace py = pybind11;
+#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
 
 /* Metoda Romberga oferuje zbieżność rzędu
  * O( h^(2 + 2*MAX_ROMBERG_STEPS) )
