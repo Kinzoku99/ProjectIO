@@ -25,13 +25,14 @@ double integrate_trapezoid(const std::string &func_expr, const std::string &var_
     double variable;
 
     initialize_expression(func_expr, var_name, expression, variable);
+
+    real_function handler = get_handler(b, e, expression, variable);
+    intrvl_ends_t ends = check_func_at_ends(handler);
     
-    handler_out handler = get_handler(b, e, expression, variable);
     return  trapezoid_quadrature_01(
-                handler.t_func,
+                handler,
                 num_of_divisions,
-                handler.left_infinite,
-                handler.right_infinite
+                ends
             );
 }
 
@@ -41,47 +42,86 @@ double integrate_romberg(const std::string &func_expr, const std::string &var_na
 
     initialize_expression(func_expr, var_name, expression, variable);
     
-    handler_out handler = get_handler(b, e, expression, variable);
+    real_function handler = get_handler(b, e, expression, variable);
+    intrvl_ends_t ends = check_func_at_ends(handler);
 
     return  romberg_quadrature_01(
-                handler.t_func,
+                handler,
                 num_of_divisions,
                 tol,
-                handler.left_infinite,
-                handler.right_infinite
+                ends
             );
 }
 
+#define SINGULARITY_DIVISIONS 1e4
+
+/**
+ * Oblicza całkę metodą trapezów na przedziale [start, end] o kroku długości h.
+ * Używa poprawki końca przedziału, czyli jeżeli ostatni trapez, nie mieścił
+ * sie w przedziale i jego pole jest skończone, to jest on dodawany do wyniku.
+ */
+static double inner_trapezoid_quadrature(double start, double end, double h, real_function f){
+    double result = 0;
+    double x = start;
+
+    result += f(x) / 2.0;       // Dodajemy pierwszy bok pierwszego trapezu
+    x += h;
+
+    // Dopóki ten *i następny* trapez są w zakresie,
+    while (x + h < end){
+        result += f(x);         // dodaj bok dwukrotnie (ten + następny)
+        x += h;
+    }
+                                // Jeżeli już następny się nie mieści,
+    result += f(x) / 2.0;       // dodaj bok ostatni, tylko raz
+    result *= h;                // Wszystko ma podstawę = h
+
+    double last_h = (end - x);
+    double last_correction = 
+        (f(end) + f(x)) * last_h / 2.0;
+
+    if (std::isfinite(last_correction))
+        result += last_correction;
+
+    return result;
+}
 
 double trapezoid_quadrature_01(
   const real_function &function,    /**< Funkcja przyjmująca i przekazująca
                                          parametr typu double.           */
   size_t num_of_divisions,          ///< Liczba podziałów
-  bool exclude_left = false,        ///< Czy pominąć ewaluację w lewym krańcu
-  bool exclude_right = false        ///< Czy pominąć ewaluację w prawym krańcu
+  intrvl_ends_t allow_ends          ///< Czy ewaluacja na krańcach jest ok?
 ){
-    double evaluation = 0;
-    double x = 0;
+    double inner_evaluation = 0;
     double h = 1.0 / num_of_divisions;
+    bool allow_left = allow_ends.allow_eval_at_left;
+    bool allow_right = allow_ends.allow_eval_at_right;
+    double first_piece = 0, last_piece = 0;
 
-    if (!exclude_left)
-        evaluation += function(0) / 2.0;
-    x += h;
-    while (x < 1.0){
-        evaluation += function(x);
-        x += h;
+
+    if (allow_left)
+        first_piece = (function(0) + function(h)) * h / 2.0;
+    else {
+        // W zerze jest prawdopodobnie osobliwość
+        double hy = h / SINGULARITY_DIVISIONS;
+
+        // Dodaj przybliżenie całki blisko osobliwości, czyli na [0 + hy, h] 
+        first_piece = inner_trapezoid_quadrature(hy, h, hy, function);
     }
-    // Poprawka na wyjściu, mogliśmy dodać fragment odpowiadający
-    // trapezowi wystającemu poza (0,1)
-    x -= h;                             // wracamy do poprzedniego p. ewaluacji
-    evaluation -= function(x) / 2.0;    // usuwamy nadmiar
-    evaluation *= h;                    // wszystkie trapzey miały podst. = h
     
-    if (!exclude_right)
-        // dodajemy ostatni trapez o innej (1 - x) podstawie
-        evaluation += (function(1) + function(x)) * (1.0 - x) / 2.0;
+    if (allow_right)
+        last_piece = (function(1) + function(1.0 - h)) * h / 2.0;
+    else {
+        // W jedynce jest prawdopodobnie osobliwość
+        double hy = h / SINGULARITY_DIVISIONS;
 
-    return evaluation;
+        // Dodaj przybliżenie całki blisko osobliwości, czyli na [1 - h, 1 - hy]
+        last_piece = inner_trapezoid_quadrature(1.0-h, 1.0-hy, hy, function);
+    }
+
+    inner_evaluation = inner_trapezoid_quadrature(h, 1.0 - h, h, function);
+    
+    return first_piece + inner_evaluation + last_piece;
 }
 
 /**
@@ -93,8 +133,7 @@ double romberg_quadrature_01(
                                          parametr typu double.           */
   size_t num_of_divisions,          ///< Liczba wstępnych podziałów do wykonania
   double tol,                       ///< Oczekiwana tolerancja końcowa
-  bool exclude_left = false,        ///< Czy pominąć ewaluację w lewym krańcu
-  bool exclude_right = false        ///< Czy pominąć ewaluację w prawym krańcu
+  intrvl_ends_t allow_ends          ///< Czy ewaluacja na krańcach jest ok?
 ){
     // Pozycja elementu o najmniejszej długości podziału
     size_t current_position = MAX_ROMBERG_STEPS - 1; 
@@ -107,8 +146,7 @@ double romberg_quadrature_01(
 
     // Funkcja trapezoid_quadrature_01 oblicza złożoną kwadraturę trapezów
     romberg_evals[MAX_ROMBERG_STEPS-1] =
-        trapezoid_quadrature_01(function, num_of_divisions,
-                                exclude_left, exclude_right);
+        trapezoid_quadrature_01(function, num_of_divisions, allow_ends);
 
     while((algorithm_iteration < MAX_ROMBERG_STEPS -1) && !accuracy_achieved){
         
@@ -121,8 +159,7 @@ double romberg_quadrature_01(
         num_of_divisions *= 2;
         // Obliczamy nowe przybliżenie i zapisujemy na lewo od już posiadanych
         romberg_evals[current_position - 1] =
-            trapezoid_quadrature_01(function, num_of_divisions,
-                                    exclude_left, exclude_right);
+            trapezoid_quadrature_01(function, num_of_divisions, allow_ends);
 
         /**********************************************************************
          * W metodzie Romberga, ważne są współczynniki, które zależą od

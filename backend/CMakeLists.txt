@@ -13,10 +13,10 @@ include(CTest)
 
 # Domyślny tryb wywołania CMake
 if (NOT CMAKE_BUILD_TYPE)
-    message(STATUS "Nie wybrano typu kompilacji, ustawienie domyślne to Release")
+    message(STATUS "Nie wybrano trybu kompilacji. Ustawienie domyślne to Release")
     set(CMAKE_BUILD_TYPE "Release")
 else (NOT CMAKE_BUILD_TYPE)
-    message(STATUS "Wybrano typ kompilacji: " ${CMAKE_BUILD_TYPE} )
+    message(STATUS "Wybrano tryb kompilacji: " ${CMAKE_BUILD_TYPE} )
 endif (NOT CMAKE_BUILD_TYPE)
 
 # Dodatkowe kolorowane wyjścia
@@ -58,10 +58,18 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/libraries)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/libraries)
+
 set(CMAKE_TESTS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/outputs)
 add_compile_definitions(__TESTS_OUTPUT_DIRECTORY__="${CMAKE_TESTS_OUTPUT_DIRECTORY}")
 
-add_custom_target(clean_outputs ALL rm -f ${CMAKE_TESTS_OUTPUT_DIRECTORY}/*
+
+if (NOT EXISTS ${CMAKE_TESTS_OUTPUT_DIRECTORY})
+    message(STATUS "Tworzenie katalogu wyjściowego dla testów "
+                    "\"" ${CMAKE_TESTS_OUTPUT_DIRECTORY} "\"")
+    file (MAKE_DIRECTORY ${CMAKE_TESTS_OUTPUT_DIRECTORY})
+endif(NOT EXISTS ${CMAKE_TESTS_OUTPUT_DIRECTORY})
+
+add_custom_target(clean_outputs ALL rm -rf ${CMAKE_TESTS_OUTPUT_DIRECTORY}
                   COMMENT "Usuwanie danych wyjściowych testów")
                   
 add_subdirectory("src")

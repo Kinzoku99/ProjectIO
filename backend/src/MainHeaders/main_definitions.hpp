@@ -16,6 +16,16 @@
 #include "../../../pybind/pybind11/include/pybind11/pybind11.h"
 #include "../../../pybind/pybind11/include/pybind11/stl.h"
 
+#ifndef NDEBUG
+    #pragma message ( "DEBUG IS ON" )
+    #define debugf(fmt, ...)    \
+    fprintf(stderr, fmt, ##__VA_ARGS__)
+#else
+    #define debugf(fmt, ...)
+#endif
+
+#define GLOBAL_TOLERANCE 1e-6
+
 using real_function = std::function<double(double)>;
 
 typedef exprtk::expression<double> expr_t;

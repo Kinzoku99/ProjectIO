@@ -14,6 +14,8 @@
 #include <main_definitions.hpp>
 #include <expr_handler.hpp>
 
+#define M_SQRT_PIl __f64(1.77245385090551602729816748334114518279L)
+
 typedef struct {
     double node, weight;
 } weighted_node_t;
@@ -66,7 +68,19 @@ double integrate_romberg(
   double tol
 );
 
+double integrate_gauss(
+    const std::string &function_expression,
+    const std::string &variable_name,
+    gauss_quadrature_type q_type,
+    size_t rank
+);
 
+double integrate_gauss_weight_provided(
+    const std::string &function_expression,
+    const std::string &variable_name,
+    gauss_quadrature_type q_type,
+    size_t rank
+);
 
 /*
  * Poniżej znajdują się nagłówki procedur liczących.
@@ -78,17 +92,23 @@ double integrate_romberg(
  * @attention z dostatecznie gładkiej funkcji bez punktów osobliwych
  * 
  */
-double trapezoid_quadrature_01(const real_function &function, size_t num_of_divisions, bool exclude_left, bool exclude_right);
+double trapezoid_quadrature_01(const real_function &function, size_t num_of_divisions, intrvl_ends_t ends_info);
 
 /**
  * Procedura licząca całkę między 0-1 przy pomocy metody Romberga
  * dla złożonej kwadratury trapezów
  * @attention z dostatecznie gładkiej funkcji bez punktów osobliwych
  */
-double romberg_quadrature_01(const real_function &function, size_t num_of_divisions, double tol, bool exclude_left, bool exclude_right);
+double romberg_quadrature_01(const real_function &function, size_t num_of_divisions, double tol, intrvl_ends_t ends_info);
 
 
+double __raw_integrate_gauss(
+    gauss_quadrature_type q_type,
+    size_t rank,
+    real_function integrand
+);
 
+qnodes get_gqdrtr_qnodes(gauss_quadrature_type type, size_t rank);
 
 
 #endif /* NUM_INTEGRAL_H */

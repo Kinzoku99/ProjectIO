@@ -13,12 +13,13 @@
 #include <num.DESolvers.hpp>
 #include <num.Integrals.hpp>
 
+#define GLOBAL_TOLERANCE 1e-6
 
 /** @brief Assert z wypisaniem wiadomości na STDERR */
 #define assert_printf(expr, fmtStr, ...)    \
     for (; static_cast<bool> (!(expr))      \
          ; __assert_fail(#expr, __FILE__, __LINE__, __ASSERT_FUNCTION))\
-        fprintf(stderr, fmtStr, __VA_ARGS__)
+        fprintf(stderr, fmtStr, ##__VA_ARGS__)
 
 /**
  * @brief Klasa pojdeynczego testu.
@@ -138,8 +139,38 @@ public:
  */
 #define MAKE_TEST(input, result, variable) Testing_unit(#input, #result, #variable)
 
+
+                        /* FUNKCJE TESTOWE */
+
+
+inline void check_integration_test(double result, double calc){
+    if (fabs(result) <= __DBL_EPSILON__ / GLOBAL_TOLERANCE)
+        assert(fabs(result - calc) <= GLOBAL_TOLERANCE);
+    else
+        assert(fabs(result - calc) <= fabs(result) * GLOBAL_TOLERANCE);
+}
+
+inline void check_integration_test(real_function resultf, double calc, double a, double b){
+    double truth = resultf(b) - resultf(a);
+    check_integration_test(truth, calc);
+}
+
+inline double soft_check_integration_test(double result, double calc){
+    if (!std::isfinite(calc))
+        return false;
+    if (fabs(result) <= __DBL_EPSILON__ / GLOBAL_TOLERANCE)
+        return(fabs(result - calc) <= GLOBAL_TOLERANCE);
+    else
+        return(fabs(result - calc) <= fabs(result) * GLOBAL_TOLERANCE);
+}
+
+inline double soft_integration_test(real_function resultf, double calc, double a, double b){
+    double truth = resultf(b) - resultf(a);
+    return soft_check_integration_test(truth, calc);
+}
+
 inline void print_integration_test(const char * mehtod_name, const std::string &int_name, double a, double b, double true_res, double calc_res){
-    printf("Całka numeryczna z funkcji:\t%s\nna przedziale (%f, %f) metodą %s \n\tPrawdziwy: %.12f\tObliczony: %.12f\n",
+    fprintf(stderr, "Całka numeryczna z funkcji:\t%s\nna przedziale (%f, %f) metodą %s \n\tPrawdziwy: %.12f\tObliczony: %.12f\n",
             int_name.c_str(),
             a, b,
             mehtod_name,
@@ -157,13 +188,15 @@ inline void print_handler_out(real_function handler, size_t steps){
 }
 
 
-#ifdef DEBUG
-    #pragma message ( "DEBUG IS ON" )
-    #define debugf(fmt, ...)    \
-    fprintf(stderr, fmt, ##__VA_ARGS__)
-#else
-    #define debugf(fmt, ...)
-#endif
+inline void print_qdrtr_nodes(gauss_quadrature_type type, size_t rank){
+    qnodes nodes = get_gqdrtr_qnodes(type, rank);
+    printf("  Point\t  Weight\n");
+    for (auto &node : nodes){
+        printf("%08.08lf\t%08.08lf\n", node.node, node.weight);
+    }
+}
+
+
 
 
 #endif /* TESTER_HEADER */
