@@ -604,7 +604,7 @@ public:
     }
 
     /// type number of dtype.
-    ssize_t num() const {
+    int num() const {
         // Note: The signature, `dtype::num` follows the naming of NumPy's public
         // Python API (i.e., ``dtype.num``), rather than its internal
         // C API (``PyArray_Descr::type_num``).
@@ -641,19 +641,24 @@ private:
             pybind11::str name;
             object format;
             pybind11::int_ offset;
+            field_descr(pybind11::str &&name, object &&format, pybind11::int_ &&offset)
+                : name{std::move(name)}, format{std::move(format)}, offset{std::move(offset)} {};
         };
+        auto field_dict = attr("fields").cast<dict>();
         std::vector<field_descr> field_descriptors;
+        field_descriptors.reserve(field_dict.size());
 
-        for (auto field : attr("fields").attr("items")()) {
+        for (auto field : field_dict.attr("items")()) {
             auto spec = field.cast<tuple>();
             auto name = spec[0].cast<pybind11::str>();
-            auto format = spec[1].cast<tuple>()[0].cast<dtype>();
-            auto offset = spec[1].cast<tuple>()[1].cast<pybind11::int_>();
+            auto spec_fo = spec[1].cast<tuple>();
+            auto format = spec_fo[0].cast<dtype>();
+            auto offset = spec_fo[1].cast<pybind11::int_>();
             if ((len(name) == 0u) && format.kind() == 'V') {
                 continue;
             }
-            field_descriptors.push_back(
-                {(pybind11::str) name, format.strip_padding(format.itemsize()), offset});
+            field_descriptors.emplace_back(
+                std::move(name), format.strip_padding(format.itemsize()), std::move(offset));
         }
 
         std::sort(field_descriptors.begin(),

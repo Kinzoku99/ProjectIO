@@ -394,15 +394,16 @@ instance::get_value_and_holder(const type_info *find_type /*= nullptr default in
         return value_and_holder();
     }
 
-#if defined(NDEBUG)
-    pybind11_fail("pybind11::detail::instance::get_value_and_holder: "
-                  "type is not a pybind11 base of the given instance "
-                  "(compile in debug mode for type details)");
-#else
+#if defined(PYBIND11_DETAILED_ERROR_MESSAGES)
     pybind11_fail("pybind11::detail::instance::get_value_and_holder: `"
                   + get_fully_qualified_tp_name(find_type->type)
                   + "' is not a pybind11 base of the given `"
                   + get_fully_qualified_tp_name(Py_TYPE(this)) + "' instance");
+#else
+    pybind11_fail(
+        "pybind11::detail::instance::get_value_and_holder: "
+        "type is not a pybind11 base of the given instance "
+        "(#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for type details)");
 #endif
 }
 
@@ -467,72 +468,6 @@ PYBIND11_NOINLINE bool isinstance_generic(handle obj, const std::type_info &tp) 
         return false;
     }
     return isinstance(obj, type);
-}
-
-PYBIND11_NOINLINE std::string error_string() {
-    if (!PyErr_Occurred()) {
-        PyErr_SetString(PyExc_RuntimeError, "Unknown internal error occurred");
-        return "Unknown internal error occurred";
-    }
-
-    error_scope scope; // Preserve error state
-
-    std::string errorString;
-    if (scope.type) {
-        errorString += handle(scope.type).attr("__name__").cast<std::string>();
-        errorString += ": ";
-    }
-    if (scope.value) {
-        errorString += (std::string) str(scope.value);
-    }
-
-    PyErr_NormalizeException(&scope.type, &scope.value, &scope.trace);
-
-    if (scope.trace != nullptr) {
-        PyException_SetTraceback(scope.value, scope.trace);
-    }
-
-#if !defined(PYPY_VERSION)
-    if (scope.trace) {
-        auto *trace = (PyTracebackObject *) scope.trace;
-
-        /* Get the deepest trace possible */
-        while (trace->tb_next) {
-            trace = trace->tb_next;
-        }
-
-        PyFrameObject *frame = trace->tb_frame;
-        Py_XINCREF(frame);
-        errorString += "\n\nAt:\n";
-        while (frame) {
-#    if PY_VERSION_HEX >= 0x030900B1
-            PyCodeObject *f_code = PyFrame_GetCode(frame);
-#    else
-            PyCodeObject *f_code = frame->f_code;
-            Py_INCREF(f_code);
-#    endif
-            int lineno = PyFrame_GetLineNumber(frame);
-            errorString += "  ";
-            errorString += handle(f_code->co_filename).cast<std::string>();
-            errorString += '(';
-            errorString += std::to_string(lineno);
-            errorString += "): ";
-            errorString += handle(f_code->co_name).cast<std::string>();
-            errorString += '\n';
-            Py_DECREF(f_code);
-#    if PY_VERSION_HEX >= 0x030900B1
-            auto *b_frame = PyFrame_GetBack(frame);
-#    else
-            auto *b_frame = frame->f_back;
-            Py_XINCREF(b_frame);
-#    endif
-            Py_DECREF(frame);
-            frame = b_frame;
-        }
-    }
-#endif
-
-    return errorString;
 }
 
 PYBIND11_NOINLINE handle get_object_handle(const void *ptr, const detail::type_info *type) {
@@ -612,14 +547,15 @@ public:
                 if (copy_constructor) {
                     valueptr = copy_constructor(src);
                 } else {
-#if defined(NDEBUG)
-                    throw cast_error("return_value_policy = copy, but type is "
-                                     "non-copyable! (compile in debug mode for details)");
-#else
+#if defined(PYBIND11_DETAILED_ERROR_MESSAGES)
                     std::string type_name(tinfo->cpptype->name());
                     detail::clean_type_id(type_name);
                     throw cast_error("return_value_policy = copy, but type " + type_name
                                      + " is non-copyable!");
+#else
+                    throw cast_error("return_value_policy = copy, but type is "
+                                     "non-copyable! (#define PYBIND11_DETAILED_ERROR_MESSAGES or "
+                                     "compile in debug mode for details)");
 #endif
                 }
                 wrapper->owned = true;
@@ -631,15 +567,16 @@ public:
                 } else if (copy_constructor) {
                     valueptr = copy_constructor(src);
                 } else {
-#if defined(NDEBUG)
-                    throw cast_error("return_value_policy = move, but type is neither "
-                                     "movable nor copyable! "
-                                     "(compile in debug mode for details)");
-#else
+#if defined(PYBIND11_DETAILED_ERROR_MESSAGES)
                     std::string type_name(tinfo->cpptype->name());
                     detail::clean_type_id(type_name);
                     throw cast_error("return_value_policy = move, but type " + type_name
                                      + " is neither movable nor copyable!");
+#else
+                    throw cast_error("return_value_policy = move, but type is neither "
+                                     "movable nor copyable! "
+                                     "(#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in "
+                                     "debug mode for details)");
 #endif
                 }
                 wrapper->owned = true;
