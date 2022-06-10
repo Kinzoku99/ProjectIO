@@ -81,17 +81,17 @@
         margin-left: 10% !important;
     }
 
-    #subbtn {
+    /*#subbtn {
        display: none;
-    }
+    }*/
 
-    #exactbtn {
+    /*#exactbtn {
         display: none;
-    }
+    }*/
 
-    #exactexpression {
+    /*#exactexpression {
         margin-left: 10% !important;
-    }
+    }*/
 }
 
 @media (max-width: 300px) {
@@ -197,4 +197,12 @@
 
 #main-page article {
 	margin-bottom: 1rem;
+}
+
+#settbtn {
+	border-style: none;
+}
+
+.gallery-latex {
+	overflow-x: auto;
 }

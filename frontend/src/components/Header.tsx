@@ -94,7 +94,12 @@ const Header: React.FC = () => {
                             </svg>
                             <strong className="me-auto">Źródła</strong>
                         </Toast.Header>
-                        <Toast.Body>Tu będą jakieś źródła.</Toast.Body>
+                        <Toast.Body>
+                            <a href="https://jsxgraph.uni-bayreuth.de/">JSX Graph</a><br/>
+                            <a href="http://www.partow.net/programming/exprtk/">Exprtk</a><br/>
+                            <a href="http://www.netlib.org/lapack/">LAPACK</a><br/>
+                            <a href="https://www.sympy.org/en/index.html">SymPy</a>
+                        </Toast.Body>
                     </Toast>
                 </ToastContainer>
             </div>

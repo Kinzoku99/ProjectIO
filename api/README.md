@@ -7,7 +7,7 @@
     * `variable_name: string` - napis zawierający nazwę zmiennej
     * `interval_begin: float` - początek przedziału całkowania
     * `interval_end: float` - koniec przedziału całkowania
-    * `step_size: float` - wielkość kroku metody
+    * `num_of_divisions: unsigned int` - liczba podziałów odnicka
     
     Zwraca:
     * `tex_function: string` - wzór funkcji zapisany w Latexu
@@ -23,6 +23,32 @@
     * `interval_end: float` - koniec przedziału całkowania
     * `num_of_divisions: unsigned int` - liczba podziałów odcinka
     * `tol: float` - tolerancja, którą pragniemy osiągnąć
+
+    Zwraca:
+    * `tex_function: string` - wzór funkcji zapisany w Latexu
+    * `result: string` - aproksymacja całki z podanej funkcji
+
+
+* **POST** `/api/calculator/integrate_gauss/`
+
+    Argumenty:
+    * `function_expression: string` - napis zawierający definicję funkcji
+    * `variable_name: string` - napis zawierający nazwę zmiennej
+    * `type: string` - typ (Hermite, Chebyshev, Laugerre, Legrende)
+    * `rank: unsigned int` - ranga
+
+    Zwraca:
+    * `tex_function: string` - wzór funkcji zapisany w Latexu
+    * `result: string` - aproksymacja całki z podanej funkcji
+
+
+* **POST** `/api/calculator/integrate_gauss_weight/`
+
+    Argumenty:
+    * `function_expression: string` - napis zawierający definicję funkcji
+    * `variable_name: string` - napis zawierający nazwę zmiennej
+    * `type: string` - typ (Hermite, Chebyshev, Laugerre, Legrende)
+    * `rank: unsigned int` - ranga
 
     Zwraca:
     * `tex_function: string` - wzór funkcji zapisany w Latexu

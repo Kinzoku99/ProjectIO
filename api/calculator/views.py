@@ -8,19 +8,22 @@ from calculator_functions.indefinite_integration import parse_and_integrate
 from calculator_functions.other_functions import parse_to_latex
 from calculator_functions.other_functions import generate_float_string
 from calculator_functions.other_functions import generate_float_arrays
+from calculator_functions.other_functions import string_to_gauss_enum
 
 import NumIntTrapezoid
+import NumIntGauss
 import NumODERungeKutta
 
 @api_view(['POST'])
 def integrate_trapezoid(request):
     try:
+        if int(request.data['num_of_divisions']) < 0: raise Exception
         result = NumIntTrapezoid.integrate_trapezoid(
             request.data['function_expression'],
             request.data['variable_name'],
             float(request.data['interval_begin']),
             float(request.data['interval_end']),
-            float(request.data['step_size'])
+            int(request.data['num_of_divisions'])
         )
         return Response({
             'tex_function': parse_to_latex(request.data['function_expression']),
@@ -40,6 +43,40 @@ def integrate_romberg(request):
             float(request.data['interval_end']),
             int(request.data['num_of_divisions']),
             float(request.data['tol'])
+        )
+        return Response({
+            'tex_function': parse_to_latex(request.data['function_expression']),
+            'result': generate_float_string(result)
+        })
+    except Exception as e:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
+
+@api_view(['POST'])
+def integrate_gauss(request):
+    try:
+        if int(request.data['rank']) < 0: raise Exception
+        result = NumIntGauss.integrate_gauss(
+            request.data['function_expression'],
+            request.data['variable_name'],
+            string_to_gauss_enum(request.data['type']),
+            int(request.data['rank'])
+        )
+        return Response({
+            'tex_function': parse_to_latex(request.data['function_expression']),
+            'result': generate_float_string(result)
+        })
+    except Exception as e:
+        return Response(status=HTTP_400_BAD_REQUEST, data={'message': str(e)})
+
+@api_view(['POST'])
+def integrate_gauss_weight(request):
+    try:
+        if int(request.data['rank']) < 0: raise Exception
+        result = NumIntGauss.integrate_gauss_weight_provided(
+            request.data['function_expression'],
+            request.data['variable_name'],
+            string_to_gauss_enum(request.data['type']),
+            int(request.data['rank'])
         )
         return Response({
             'tex_function': parse_to_latex(request.data['function_expression']),

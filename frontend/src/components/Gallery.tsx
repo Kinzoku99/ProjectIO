@@ -57,7 +57,7 @@ const Gallery: React.FC = () => {
                                     {card.graph}
 
                                     <div className="card-body">
-                                        <div className="card-text">{EQ(card.text)}</div>
+                                        <div className="card-text gallery-latex">{EQ(card.text)}</div>
                                     </div>
                                 </div>
                             </div>))}

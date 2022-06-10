@@ -113,19 +113,6 @@ const MainPage: React.FC = () => {
                     </div>
                 </div>
             </section>
-
-            {/* Szablon jakiegoś dalszego kontentu */}
-            <section className="container pb-3">
-                <div className="row">
-                    <div className="col-lg-8 mx-auto">
-                        <h2 className="fw-light">Dalszy content</h2>
-                        <p className="text-muted">
-                            Tu powinien być dalszy content. Do poprzednich należy
-                            dodać obrazki.
-                        </p>
-                    </div>
-                </div>
-            </section>
         </main>
     );
 }

@@ -27,8 +27,8 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
 
     const onSubmit = handleSubmit((formData) => {
         const isFormulaValid = Object.entries(formData.formula_expression).length !== 0;
-        const isBegValid = !isNaN(formData.beg);
-        const isEndValid = !isNaN(formData.end);
+        const isBegValid = formData.beg.toString().length !== 0 && !isNaN(formData.beg);
+        const isEndValid = formData.end.toString().length !== 0 && !isNaN(formData.end);
 
         setFormulaValid(isFormulaValid ? ' is-valid' : ' is-invalid');
         setBegValid(isBegValid ? ' is-valid' : ' is-invalid');
@@ -150,7 +150,7 @@ const AntiderivativeGraphsCalculator: React.FC = () => {
                                         />
                                         <label htmlFor="formula">Wzór</label>
                                     </div>
-                                    <div className="mt-2 row gx-md-1">
+                                    <div className="mt-2 row gx-0 gx-md-1">
                                         <div className="form-floating mb-1 col-sm-12 col-md-6">
                                             <input
                                                 type="text"

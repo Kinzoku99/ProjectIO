@@ -201,6 +201,14 @@ double __raw_integrate_gauss(gauss_quadrature_type t, size_t n, real_function fu
 
 PYBIND11_MODULE(NumIntGauss, handle) {
      handle.doc() = "";
+
+    py::enum_<gauss_quadrature_type>(handle, "gauss_quadrature_type")
+        .value("Hermite", gauss_quadrature_type::Hermite)
+        .value("Chebyshev", gauss_quadrature_type::Chebyshev)
+        .value("Laugerre", gauss_quadrature_type::Laugerre)
+        .value("Legrende", gauss_quadrature_type::Legrende)
+        .export_values();
+
      handle.def("integrate_gauss_weight_provided", &integrate_gauss_weight_provided);
      handle.def("integrate_gauss", &integrate_gauss);
 }

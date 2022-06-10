@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {CalculatorSettings} from "../calculatorSettings";
 import {Alert} from "react-bootstrap";
+import {GaussTypes} from "../calculatorSettings";
 
 const getInitialValue = (name: string, defaultValue: string) => {
     if (localStorage.getItem(name) != null) {
@@ -14,37 +15,67 @@ const getInitialValue = (name: string, defaultValue: string) => {
 const Settings: React.FC = () => {
     const [variableName, setVariableName] = useState<string>(
         getInitialValue('variable_name', CalculatorSettings.variable_name));
+    const [variableNameValid, setVariableNameValid] = useState<string>('');
     const [intValueMethod, setIntValueMethod] = useState<string>(
         getInitialValue('int_value_method', CalculatorSettings.int_value_method));
-    const [stepSizeTrapezoid, setStepSizeTrapezoid] = useState<string>(
-        getInitialValue('step_size_trapezoid', CalculatorSettings.step_size.toString()));
+    const [numOfDivisionsTrapezoid, setNumOfDivisionsTrapezoid] = useState<string>(
+        getInitialValue('num_of_divisions_trapezoid', CalculatorSettings.num_of_divisions.toString()));
+    const [numOfDivisionsTrapezoidValid, setNumOfDivisionsTrapezoidValid] = useState<string>('');
     const [numOfDivisions, setNumOfDivisions] = useState<string>(
         getInitialValue('num_of_divisions', CalculatorSettings.num_of_divisions.toString()));
     const [numOfDivisionsValid, setNumOfDivisionsValid] = useState<string>('');
     const [tol, setTol] = useState<string>(getInitialValue('tol', CalculatorSettings.tol.toString()));
+    const [tolValid, setTolValid] = useState<string>('');
+    const [gaussValueMethod, setGaussValueMethod] = useState<string>(
+        getInitialValue('gauss_value_method', CalculatorSettings.gauss_type));
+    const [gaussRank, setGaussRank] = useState<string>(
+        getInitialValue('gauss_rank', CalculatorSettings.gauss_rank.toString()));
+    const [gaussRankValid, setGaussRankValid] = useState<string>('');
     const [stepSizeGraph, setStepSizeGraph] = useState<string>(
         getInitialValue('step_size_graph', CalculatorSettings.step_size.toString()));
+    const [stepSizeGraphValid, setStepSizeGraphValid] = useState<string>('');
     const [rankOfSolver, setRankOfSolver] = useState<string>(
         getInitialValue('rank_of_solver', CalculatorSettings.rank_of_solver.toString()));
     const [rankOfSolverValid, setRankOfSolverValid] = useState<string>('');
 
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [alertTimeout, setAlertTimeout] = useState<NodeJS.Timeout>();
+    const [showAlertDef, setShowAlertDef] = useState<boolean>(false);
+    const [alertTimeoutDef, setAlertTimeoutDef] = useState<NodeJS.Timeout>();
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        const validateVariableName = variableName.length > 0;
+        const validateNumOfDivisionsTrapezoid = parseInt(numOfDivisionsTrapezoid, 10) >= 1;
         const validateNumOfDivisions = parseInt(numOfDivisions, 10) >= 1;
+        const validateTol = tol.length > 0 && !isNaN(Number(tol));
+        const validateGaussRank = parseInt(gaussRank, 10) >= 1;
+        const validateStepSizeGraph = stepSizeGraph.length > 0 && !isNaN(Number(stepSizeGraph));
         const validateRankOfSolver = parseInt(rankOfSolver, 10) >= 1 && parseInt(rankOfSolver, 10) <= 4;
+
+        validateVariableName ? setVariableNameValid('') : setVariableNameValid(' is-invalid');
+        validateNumOfDivisionsTrapezoid ? setNumOfDivisionsTrapezoidValid('') : setNumOfDivisionsTrapezoidValid(' is-invalid');
         validateNumOfDivisions ? setNumOfDivisionsValid('') : setNumOfDivisionsValid(' is-invalid');
+        validateTol ? setTolValid('') : setTolValid(' is-invalid');
+        validateGaussRank ? setGaussRankValid('') : setGaussRankValid(' is-invalid');
+        validateStepSizeGraph ? setStepSizeGraphValid('') : setStepSizeGraphValid(' is-invalid');
         validateRankOfSolver ? setRankOfSolverValid('') : setRankOfSolverValid(' is-invalid');
 
-        if (validateNumOfDivisions && validateRankOfSolver) {
+        if (validateVariableName &&
+            validateNumOfDivisionsTrapezoid &&
+            validateNumOfDivisions &&
+            validateTol &&
+            validateGaussRank &&
+            validateStepSizeGraph &&
+            validateRankOfSolver) {
             localStorage.setItem('variable_name', variableName);
             localStorage.setItem('int_value_method', intValueMethod);
-            localStorage.setItem('step_size_trapezoid', stepSizeTrapezoid);
+            localStorage.setItem('num_of_divisions_trapezoid', numOfDivisionsTrapezoid);
             localStorage.setItem('num_of_divisions', numOfDivisions);
             localStorage.setItem('tol', tol);
+            localStorage.setItem('gauss_value_method', gaussValueMethod);
+            localStorage.setItem('gauss_rank', gaussRank);
             localStorage.setItem('step_size_graph', stepSizeGraph);
             localStorage.setItem('rank_of_solver', rankOfSolver);
 
@@ -59,22 +90,37 @@ const Settings: React.FC = () => {
     const restoreDefault = () => {
         localStorage.setItem('variable_name', CalculatorSettings.variable_name);
         localStorage.setItem('int_value_method', CalculatorSettings.int_value_method);
-        localStorage.setItem('step_size_trapezoid', CalculatorSettings.step_size.toString());
+        localStorage.setItem('num_of_divisions_trapezoid', CalculatorSettings.num_of_divisions.toString());
         localStorage.setItem('num_of_divisions', CalculatorSettings.num_of_divisions.toString());
         localStorage.setItem('tol', CalculatorSettings.tol.toString());
+        localStorage.setItem('gauss_value_method', CalculatorSettings.gauss_type);
+        localStorage.setItem('gauss_rank', CalculatorSettings.gauss_rank.toString());
         localStorage.setItem('step_size_graph', CalculatorSettings.step_size.toString());
         localStorage.setItem('rank_of_solver', CalculatorSettings.rank_of_solver.toString());
 
         setVariableName(CalculatorSettings.variable_name);
         setIntValueMethod(CalculatorSettings.int_value_method);
-        setStepSizeTrapezoid(CalculatorSettings.step_size.toString());
+        setNumOfDivisionsTrapezoid(CalculatorSettings.num_of_divisions.toString());
         setNumOfDivisions(CalculatorSettings.num_of_divisions.toString());
         setTol(CalculatorSettings.tol.toString());
+        setGaussValueMethod(CalculatorSettings.gauss_type);
+        setGaussRank(CalculatorSettings.gauss_rank.toString());
         setStepSizeGraph(CalculatorSettings.step_size.toString());
         setRankOfSolver(CalculatorSettings.rank_of_solver.toString());
 
+        setVariableNameValid('');
+        setNumOfDivisionsTrapezoidValid('');
         setNumOfDivisionsValid('');
+        setTolValid('');
+        setGaussRankValid('');
+        setStepSizeGraphValid('');
         setRankOfSolverValid('');
+
+        setShowAlertDef(true);
+
+        setAlertTimeoutDef(setTimeout(() => {
+            setShowAlertDef(false);
+        }, 5000));
     }
 
     return (
@@ -83,7 +129,7 @@ const Settings: React.FC = () => {
                 <Alert
                     show={showAlert}
                     variant="success"
-                    className="col-12 col-md-6 my-3 mx-auto fade"
+                    className="col-12 col-md-6 mt-2 mb-0 mx-auto fade"
                     onClose={() => {
                         setShowAlert(false);
                         if (alertTimeout) {
@@ -93,6 +139,22 @@ const Settings: React.FC = () => {
                     dismissible
                 >
                     Ustawienia zapisane pomyślnie!
+                </Alert>
+            </div>
+            <div className="row mx-2">
+                <Alert
+                    show={showAlertDef}
+                    variant="secondary"
+                    className="col-12 col-md-6 mt-2 mb-0 mx-auto fade"
+                    onClose={() => {
+                        setShowAlertDef(false);
+                        if (alertTimeoutDef) {
+                            clearTimeout(alertTimeoutDef);
+                        }
+                    }}
+                    dismissible
+                >
+                    Przywrócono ustawienia domyślne
                 </Alert>
             </div>
             <div className="container text-center py-5">
@@ -107,7 +169,7 @@ const Settings: React.FC = () => {
                                 <div className="form-floating mb-1">
                                     <input
                                         type="text"
-                                        className="form-control"
+                                        className={"form-control" + variableNameValid}
                                         id="variable_name"
                                         placeholder="variable_name"
                                         value={variableName}
@@ -127,20 +189,26 @@ const Settings: React.FC = () => {
                                     >
                                         <option value="trapezoid">Metoda złożonej kwadratury trapezów</option>
                                         <option value="romberg">Metoda Romberga</option>
+                                        <option value="gauss">Metoda Gaussa</option>
+                                        <option value="gauss_weight">Metoda Gaussa z wagą</option>
                                     </select>
                                     <label htmlFor="method_select">Domyślna metoda</label>
                                 </div>
                                 Metoda złożonej kwadratury trapezów
                                 <div className="form-floating mb-3 mt-3">
                                     <input
-                                        type="text"
-                                        className="form-control"
-                                        id="step_size_trapezoid"
-                                        placeholder="step_size_trapezoid"
-                                        value={stepSizeTrapezoid}
-                                        onChange={event => setStepSizeTrapezoid(event.target.value)}
+                                        type="number"
+                                        className={"form-control" + numOfDivisionsTrapezoidValid}
+                                        id="num_of_divisions_trapezoid"
+                                        placeholder="num_of_divisions_trapezoid"
+                                        value={numOfDivisionsTrapezoid}
+                                        onChange={event => setNumOfDivisionsTrapezoid(event.target.value)}
+                                        min={1}
                                     />
-                                    <label htmlFor="step_size_trapezoid">Wielkość kroku</label>
+                                    <label htmlFor="num_of_divisions_trapezoid">Liczba podziałów odcinka</label>
+                                    <div className="invalid-feedback mb-2">
+                                        Podaj liczbę większą od 1
+                                    </div>
                                 </div>
                                 Metoda Romberga
                                 <div className="form-floating mb-1 mt-3">
@@ -158,10 +226,10 @@ const Settings: React.FC = () => {
                                         Podaj liczbę większą od 1
                                     </div>
                                 </div>
-                                <div className="form-floating mb-1">
+                                <div className="form-floating mb-3">
                                     <input
                                         type="text"
-                                        className="form-control"
+                                        className={"form-control" + tolValid}
                                         id="tol"
                                         placeholder="tol"
                                         value={tol}
@@ -169,13 +237,47 @@ const Settings: React.FC = () => {
                                     />
                                     <label htmlFor="tol">Tolerancja</label>
                                 </div>
+                                Metoda Gaussa
+                                <div className="form-floating mt-3 mb-1">
+                                    <select
+                                        className="form-select"
+                                        id="gauss_method_select"
+                                        onChange={event => setGaussValueMethod(event.target.value)}
+                                        value={gaussValueMethod}
+                                    >
+                                        {GaussTypes.map((value) => {
+                                            if (value === 'Laugerre' || value === 'Legrende') {
+                                                return <option value={value} key={value} disabled={true}>
+                                                    {value} - coming soon
+                                                </option>
+                                            }
+                                            return <option value={value} key={value}>{value}</option>
+                                        })}
+                                    </select>
+                                    <label htmlFor="gauss_method_select">Domyślna metoda</label>
+                                </div>
+                                <div className="form-floating mb-3">
+                                    <input
+                                        type="number"
+                                        className={"form-control" + gaussRankValid}
+                                        id="gauss_rank"
+                                        placeholder="gauss_rank"
+                                        value={gaussRank}
+                                        onChange={event => setGaussRank(event.target.value)}
+                                        min={1}
+                                    />
+                                    <label htmlFor="gauss_rank">Ranga</label>
+                                    <div className="invalid-feedback mb-2">
+                                        Podaj liczbę większą od 0
+                                    </div>
+                                </div>
                             </div>
                             <div className="mb-4">
                                 <p className="lead text-muted p11 mb-2">Rysowanie wykresów</p>
                                 <div className="form-floating mb-1">
                                     <input
                                         type="text"
-                                        className="form-control"
+                                        className={"form-control" + stepSizeGraphValid}
                                         id="step_size_graph"
                                         placeholder="step_size_graph"
                                         value={stepSizeGraph}

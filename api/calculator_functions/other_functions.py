@@ -6,6 +6,15 @@ from sympy.parsing.sympy_parser import T
 from calculator_functions.default_calculator_params import calculator_params
 import custom_exceptions
 
+import NumIntGauss
+
+gauss_enum_str = {
+    'Hermite': NumIntGauss.Hermite,
+    'Chebyshev': NumIntGauss.Chebyshev,
+    'Laugerre': NumIntGauss.Laugerre,
+    'Legrende': NumIntGauss.Legrende
+}
+
 def parse_to_latex(func_expr):
     func = parse_expr(func_expr.replace("^", "**"), transformations=T[:6, 10])
     return latex(func)
@@ -38,3 +47,10 @@ def generate_float_arrays(array):
         y_values.append(val[1])
 
     return {'x_values': x_values, 'y_values': y_values}
+
+def string_to_gauss_enum(str):
+    for key, val in gauss_enum_str.items():
+        if key == str:
+            return val
+
+    raise Exception
