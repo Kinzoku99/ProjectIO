@@ -9,6 +9,7 @@
 #define GET_WEIGHT_INTEGRAL(w)  \
         trapezoid_quadrature_01(w, 1e10, 1, 1)
 
+#define LEGENDRE_WEIGHT_INTEGRAL 2
 
 /* LAPACK DSTEQR */
 extern "C" void dsteqr_(const char *, const int *, double *, double *,
@@ -22,6 +23,9 @@ int golub_welsch(int n, double *subd, double *diag, qnodes &qn){
     double *vects = (double *)malloc(sizeof(double) * n * n);
     double *work = (double *)malloc(sizeof(double) * std::max(1, 2*n - 1));
 
+    if (!vects || !work)
+        throw std::bad_alloc();
+
     int info = 0;
     dsteqr_("I", &n, diag, subd, vects, &n, work, &info);
 
@@ -33,9 +37,10 @@ int golub_welsch(int n, double *subd, double *diag, qnodes &qn){
             });
         }
     }
-    else
-        return info;
-    return 0;
+    free(vects);
+    free(work);
+    return info;
+    
 }
 
 int golub_welsch(int n, double *subd, double *diag, qnodes &qn, double moment){
@@ -44,6 +49,9 @@ int golub_welsch(int n, double *subd, double *diag, qnodes &qn, double moment){
     
     double *vects = (double *)malloc(sizeof(double) * n * n);
     double *work = (double *)malloc(sizeof(double) * std::max(1, 2*n - 1));
+
+    if (!vects || !work)
+        throw std::bad_alloc();
 
     int info = 0;
     dsteqr_("I", &n, diag, subd, vects, &n, work, &info);
@@ -59,9 +67,9 @@ int golub_welsch(int n, double *subd, double *diag, qnodes &qn, double moment){
             );
         }
     }
-    else
-        return info;
-    return 0;
+    free(vects);
+    free(work);
+    return info;
 }
 
 real_function hermite_weight_function = [](double x){return exp(-pow(x,2));};
@@ -77,10 +85,16 @@ qnodes get_gauss_hermite_qnodes(size_t rank){
     double *diagonal = (double *)calloc(sizeof(double), rank);
     double *subdiag = (double *)malloc(sizeof(double) * (rank - 1));
 
+    if (!diagonal || !subdiag)
+        throw std::bad_alloc();
+
     for (size_t i = 1; i < rank; ++i)
         subdiag[i - 1] = M_SQRT1_2f64 * sqrt(i);
     
     golub_welsch(rank, subdiag, diagonal, result, M_SQRT_PIl);
+
+    free(diagonal);
+    free(subdiag);
 
     return result;
 }
@@ -101,6 +115,24 @@ qnodes get_gauss_chebyshev_qndoes(size_t rank){
     return result;
 }
 
+qnodes get_gauss_legendre_qnodes(size_t rank){
+    qnodes result;
+    result.reserve(rank);
+    // na przękątnej mamy n / sqrt(4n^2 - 1)
+    double *diagonal = (double *)calloc(sizeof(double), rank);
+    double *subdiag = (double *)malloc(sizeof(double) * (rank - 1));
+
+    if (!diagonal || !subdiag)
+        throw std::bad_alloc();
+    
+    golub_welsch(rank, subdiag, diagonal, result, LEGENDRE_WEIGHT_INTEGRAL);
+
+    free(diagonal);
+    free(subdiag);
+    
+    return result;
+}
+
 
 qnodes get_gqdrtr_qnodes(gauss_quadrature_type type, size_t rank){
     switch (type){
@@ -115,7 +147,7 @@ qnodes get_gqdrtr_qnodes(gauss_quadrature_type type, size_t rank){
             break;
     //  case Legrende:
         default:
-            std::__throw_invalid_argument("Not implemented.");
+            return get_gauss_legendre_qnodes(rank);
             break;
     }
 }

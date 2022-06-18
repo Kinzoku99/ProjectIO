@@ -85,4 +85,6 @@ int main(){
         assert(test_passed);
         printf("Rank used := %zu\n", rank);
     }
+
+    printf("%s", ___NANOMACHINES_SON___);
 }

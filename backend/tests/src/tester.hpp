@@ -22,6 +22,13 @@
         fprintf(stderr, fmtStr, ##__VA_ARGS__)
 
 /**
+ * Każdy plikt testowy powinien załączyć ten nagłówek, więc aby uprościć
+ * zapis plików testowych, z góry odkrywamy namespace tester, do którego
+ * należą procedury tylko na potrzeby testów.
+ */
+using namespace tester;
+
+/**
  * @brief Klasa pojdeynczego testu.
  * 
  * Zawiera nazwy dwóch funkcji oraz nazwę zmiennej jaka występuje w tych
