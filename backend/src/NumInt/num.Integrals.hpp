@@ -22,6 +22,9 @@ typedef struct {
 
 using qnodes = std::vector<weighted_node_t>;
 
+/**
+ * @brief Rodzaje kwadratur Gaussa-<...>
+ */
 typedef enum __gauss_who_qdrtr {
     Hermite,
     Chebyshev,
@@ -68,13 +71,41 @@ double integrate_romberg(
   double tol
 );
 
+/**
+ * @brief Całkowanie numeryczne z użyciem jednej z kwadratur typu Gaussa
+ * 
+ * @attention Ta procedura sztucznie mnoży i dzieli podaną funkcję przez
+ *            funkcję wagową. Dla szybko rosnących funkcji wagowych
+ *            (np. kwadratura Gaussa-Hermite'a) prowadzi to szybko
+ *            do błędu obliczeń (niesk. / niesk. lub 0 / 0). Jeżeli 
+ *            funkcja wagowa jest już podana, powinno się używać procedury
+ *            @ref integrate_gauss_weight_provided
+ * 
+ * @param function_expression   Napis zawierający definicję funkcji
+ * @param variable_name         Napis zawierający nazwę zmiennej
+ * @param q_type                Typ kwadratury (Gaussa-?)
+ * @param rank                  Rząd kwadratury
+ * @return double               Aproksymacja całki z podanej funkcji
+ */
 double integrate_gauss(
     const std::string &function_expression,
     const std::string &variable_name,
     gauss_quadrature_type q_type,
     size_t rank
 );
-
+/**
+ * @brief Całkowanie numeryczne z użyciem jednej z kwadratur typu Gaussa
+ * 
+ * @attention Zakładamy, że wprowadzana funkcja jest w odpowiedniej postaci
+ *            w(x) * f(x), gdzie w(x) to odpowiednia funkcja wagowa, 
+ *            zależna od wybranej kwadratury.
+ * 
+ * @param function_expression   Napis zawierający definicję funkcji
+ * @param variable_name         Napis zawierający nazwę zmiennej
+ * @param q_type                Typ kwadratury (Gaussa-?)
+ * @param rank                  Rząd kwadratury
+ * @return double               Aproksymacja całki z podanej funkcji
+ */
 double integrate_gauss_weight_provided(
     const std::string &function_expression,
     const std::string &variable_name,
@@ -85,12 +116,15 @@ double integrate_gauss_weight_provided(
 /*
  * Poniżej znajdują się nagłówki procedur liczących.
  * Uwaga! procedury te liczą całki TYLKO na przedziale 0-1.
+ * 
+ * Niektóre, może i poradziłby sobie z dowolnym przedziałe, ale
+ * w celach ujednolicenia dostępu, należy konstruować funkcję : [0,1] -> R
  */
+
 
 /**
  * Procedura licząca całkę między 0-1 przy pomocy złożonej kwadratury trapezów
  * @attention z dostatecznie gładkiej funkcji bez punktów osobliwych
- * 
  */
 double trapezoid_quadrature_01(const real_function &function, size_t num_of_divisions, intrvl_ends_t ends_info);
 
@@ -102,6 +136,9 @@ double trapezoid_quadrature_01(const real_function &function, size_t num_of_divi
 double romberg_quadrature_01(const real_function &function, size_t num_of_divisions, double tol, intrvl_ends_t ends_info);
 
 
+namespace tester {
+
+
 double __raw_integrate_gauss(
     gauss_quadrature_type q_type,
     size_t rank,
@@ -110,5 +147,6 @@ double __raw_integrate_gauss(
 
 qnodes get_gqdrtr_qnodes(gauss_quadrature_type type, size_t rank);
 
+}
 
 #endif /* NUM_INTEGRAL_H */
